@@ -73,30 +73,39 @@ describe('DOM Parser', () => {
         beforeEach(() => {
             // Mock jQuery DOM methods
             (global as any).jQuery = jest.fn((selector: string) => {
-                const mockElement = {
-                    length: selector.includes('_lookupmodal') ? 1 : 0,
-                    find: jest.fn(() => ({
-                        length: selector.includes('.entity-grid') ? 1 : 0,
-                        attr: jest.fn(() => {
-                            if (selector.includes('data-view-layouts')) {
-                                const testData = [{
-                                    Id: 'test-id',
-                                    ViewName: 'Test View',
-                                    Configuration: {
-                                        EntityName: 'sch_address',
-                                        PrimaryKeyName: 'sch_addressid'
-                                    },
-                                    Columns: [
-                                        { Type: 0, LogicalName: 'sch_name' }
-                                    ]
-                                }];
-                                return Buffer.from(JSON.stringify(testData)).toString('base64');
+                if (selector.includes('_lookupmodal')) {
+                    // Mock the lookup modal
+                    return {
+                        length: 1,
+                        find: jest.fn((findSelector: string) => {
+                            if (findSelector === '.entity-grid') {
+                                // Mock the entity grid with data-view-layouts attribute
+                                return {
+                                    length: 1,
+                                    attr: jest.fn((attrName: string) => {
+                                        if (attrName === 'data-view-layouts') {
+                                            const testData = [{
+                                                Id: 'test-id',
+                                                ViewName: 'Test View',
+                                                Configuration: {
+                                                    EntityName: 'sch_address',
+                                                    PrimaryKeyName: 'sch_addressid'
+                                                },
+                                                Columns: [
+                                                    { Type: 0, LogicalName: 'sch_name' }
+                                                ]
+                                            }];
+                                            return Buffer.from(JSON.stringify(testData)).toString('base64');
+                                        }
+                                        return null;
+                                    })
+                                };
                             }
-                            return null;
+                            return { length: 0 };
                         })
-                    }))
-                };
-                return mockElement;
+                    };
+                }
+                return { length: 0 };
             });
         });
 

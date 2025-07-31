@@ -67,8 +67,9 @@ class SimpleTest {
                     actual();
                     throw new Error('Expected function to throw');
                 } catch (error) {
-                    if (expectedMessage && !error.message.includes(expectedMessage)) {
-                        throw new Error(`Expected error message to contain "${expectedMessage}", but got "${error.message}"`);
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    if (expectedMessage && !errorMessage.includes(expectedMessage)) {
+                        throw new Error(`Expected error message to contain "${expectedMessage}", but got "${errorMessage}"`);
                     }
                 }
             }

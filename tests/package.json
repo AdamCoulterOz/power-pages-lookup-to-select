@@ -2,14 +2,14 @@
   "name": "power-pages-lookup-to-select-tests",
   "version": "2.0.0",
   "devDependencies": {
-    "@types/jest": "^29.5.5",
-    "@types/jquery": "^3.5.16",
-    "@types/node": "^20.8.0",
-    "@types/select2": "^4.0.55",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.2.2"
+    "@types/jest": "^30.0.0",
+    "@types/jquery": "^3.5.32",
+    "@types/node": "^20.19.9",
+    "@types/select2": "^4.0.63",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "test": "jest",
@@ -21,17 +21,22 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
+    "setupFilesAfterEnv": ["<rootDir>/setup.ts"],
     "testMatch": [
-      "<rootDir>/tests/**/*.test.ts"
+      "<rootDir>/**/*.test.ts"
     ],
     "collectCoverageFrom": [
-      "src/**/*.ts",
-      "!src/**/*.d.ts",
-      "!src/index.js"
+      "../src/**/*.ts",
+      "!../src/**/*.d.ts",
+      "!../src/index.js"
     ],
-    "moduleNameMapping": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/../src/$1",
+      "^../src/(.*)$": "<rootDir>/../src/$1"
+    },
+    "modulePaths": ["<rootDir>/../"],
+    "testTimeout": 10000,
+    "verbose": true,
+    "displayName": "Power Pages Lookup to Select Tests"
   }
 }

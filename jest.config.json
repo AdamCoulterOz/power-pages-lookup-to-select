@@ -1,0 +1,22 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "jsdom",
+  "rootDir": "tests",
+  "setupFilesAfterEnv": ["<rootDir>/setup.ts"],
+  "testMatch": [
+    "<rootDir>/**/*.test.ts"
+  ],
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/index.js"
+  ],
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/../src/$1",
+    "^../src/(.*)$": "<rootDir>/../src/$1"
+  },
+  "modulePaths": ["<rootDir>/../"],
+  "testTimeout": 10000,
+  "verbose": true,
+  "displayName": "Power Pages Lookup to Select Tests"
+}

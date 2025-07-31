@@ -4,7 +4,7 @@
 
 // Mock jQuery globally
 (global as any).jQuery = {
-    extend: jest.fn((target, ...sources) => Object.assign(target, ...sources)),
+    extend: jest.fn((target: any, ...sources: any[]) => Object.assign(target, ...sources)),
     Deferred: jest.fn(() => ({
         done: jest.fn(),
         fail: jest.fn(),
@@ -21,22 +21,25 @@
 // Mock Power Pages globals
 (global as any).shell = {
     getTokenDeferred: jest.fn(() => ({
-        done: jest.fn((callback) => {
+        done: jest.fn((callback: any) => {
             callback('mock-token');
             return { fail: jest.fn() };
         })
     }))
 };
 
-(global as any).validateLoginSession = jest.fn((data, textStatus, jqXHR, callback) => {
+(global as any).validateLoginSession = jest.fn((data: any, textStatus: any, jqXHR: any, callback: any) => {
     callback(data);
 });
 
 // Mock atob for base64 decoding
-(global as any).atob = jest.fn((base64) => {
+(global as any).atob = jest.fn((base64: string) => {
     return Buffer.from(base64, 'base64').toString('utf-8');
 });
 
 // Mock console methods to avoid noise in tests
-global.console.warn = jest.fn();
-global.console.error = jest.fn();
+(global as any).console = {
+    ...console,
+    warn: jest.fn(),
+    error: jest.fn()
+};
