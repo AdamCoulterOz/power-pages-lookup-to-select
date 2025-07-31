@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Column Metadata Extraction Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Column Metadata Extraction Test</h2>
+    
+    <script>
+        // Test the column extraction logic
+        function testColumnExtraction() {
+            // Sample view layouts data similar to what Power Pages generates
+            const sampleViewLayouts = [
+                {
+                    "Configuration": {
+                        "EntityName": "sch_address",
+                        "PrimaryKeyName": "sch_addressid"
+                    },
+                    "ViewName": "Address Lookup View",
+                    "Columns": [
+                        {
+                            "Type": 1, // selectColumn - should be skipped
+                            "LogicalName": "sch_addressid",
+                            "Name": "ID"
+                        },
+                        {
+                            "Type": 0, // viewColumn - this should be used
+                            "LogicalName": "sch_name",
+                            "Name": "Address Name"
+                        },
+                        {
+                            "Type": 0, // viewColumn - second one
+                            "LogicalName": "sch_street",
+                            "Name": "Street"
+                        }
+                    ]
+                },
+                {
+                    "Configuration": {
+                        "EntityName": "contact",
+                        "PrimaryKeyName": "contactid"
+                    },
+                    "ViewName": "Contact Lookup View",
+                    "Columns": [
+                        {
+                            "Type": 1, // selectColumn
+                            "LogicalName": "contactid",
+                            "Name": "Contact"
+                        },
+                        {
+                            "Type": 0, // viewColumn - should extract "fullname"
+                            "LogicalName": "fullname",
+                            "Name": "Full Name"
+                        },
+                        {
+                            "Type": 0, // viewColumn
+                            "LogicalName": "emailaddress1",
+                            "Name": "Email"
+                        }
+                    ]
+                }
+            ];
+
+            // Helper function to determine text field name (same as in main code)
+            function getTextFieldName(entityName, columns) {
+                // Extract the LogicalName from the first Type 0 (viewColumn) from the columns metadata
+                if (columns && Array.isArray(columns)) {
+                    const firstViewColumn = columns.find(column => column.Type === 0);
+                    if (firstViewColumn && firstViewColumn.LogicalName) {
+                        return firstViewColumn.LogicalName;
+                    }
+                }
+
+                // If no column metadata is available, we cannot safely determine the text field
+                // Return null to indicate that manual configuration is required
+                return null;
+            }
+
+            console.log("=== Column Metadata Extraction Test ===");
+            
+            sampleViewLayouts.forEach((layout, index) => {
+                const entityName = layout.Configuration.EntityName;
+                const extractedTextField = getTextFieldName(entityName, layout.Columns);
+                
+                console.log(`\nEntity ${index + 1}: ${entityName}`);
+                console.log(`Columns:`, layout.Columns);
+                console.log(`Extracted text field: ${extractedTextField}`);
+                
+                // Verify the extraction
+                const firstViewColumn = layout.Columns.find(col => col.Type === 0);
+                const expected = firstViewColumn ? firstViewColumn.LogicalName : 'fallback';
+                const success = extractedTextField === expected;
+                
+                console.log(`Expected: ${expected}`);
+                console.log(`✅ Extraction ${success ? 'SUCCESS' : 'FAILED'}`);
+            });
+
+            // Test entity without columns (should return null)
+            console.log("\n=== No Columns Test (should require manual config) ===");
+            const noColumnsTest = getTextFieldName('contact', null);
+            console.log(`Contact without columns: ${noColumnsTest}`);
+            console.log(`✅ No columns handling ${noColumnsTest === null ? 'SUCCESS' : 'FAILED'}`);
+
+            // Test empty columns array
+            const emptyColumnsTest = getTextFieldName('contact', []);
+            console.log(`Contact with empty columns: ${emptyColumnsTest}`);
+            console.log(`✅ Empty columns handling ${emptyColumnsTest === null ? 'SUCCESS' : 'FAILED'}`);
+
+            // Test columns with no Type 0
+            const noType0Test = getTextFieldName('contact', [
+                { "Type": 1, "LogicalName": "contactid", "Name": "ID" }
+            ]);
+            console.log(`Contact with no Type 0 columns: ${noType0Test}`);
+            console.log(`✅ No Type 0 handling ${noType0Test === null ? 'SUCCESS' : 'FAILED'}`);
+        }
+
+        // Run the test
+        $(document).ready(function() {
+            testColumnExtraction();
+        });
+    </script>
+
+    <p>Check the browser console to see the column extraction test results.</p>
+    <p>This demonstrates how the plugin now extracts text field names from the actual view column metadata rather than using hardcoded mappings.</p>
+
+    <h3>Key Benefits:</h3>
+    <ul>
+        <li><strong>Accurate Field Detection</strong> - Uses only the exact field configured in the Power Pages view</li>
+        <li><strong>No Unsafe Fallbacks</strong> - Requires manual configuration when column metadata is unavailable</li>
+        <li><strong>Error Prevention</strong> - Eliminates risk of incorrect field references</li>
+        <li><strong>Explicit Configuration</strong> - Clear indication when manual setup is needed</li>
+    </ul>
+
+</body>
+</html>

@@ -1,24 +1,46 @@
 {
   "name": "power-pages-lookup-to-select",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "jQuery library to easily replace Power Pages lookup control with Select2 control",
-  "main": "src/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "rebuild": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run rebuild"
   },
   "keywords": [
     "powerpages",
-    "powerplatform"
+    "powerplatform",
+    "select2",
+    "jquery",
+    "typescript"
   ],
   "files": [
-    "src"
+    "src",
+    "dist",
+    "examples"
   ],
   "author": "Oleksandr Olashyn",
   "license": "MIT",
   "dependencies": {
+    "pluralize": "^8.0.0",
     "select2": "^4.1.0-rc.0"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "@types/pluralize": "^0.0.33",
+    "@types/select2": "^4.0.63",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "jquery": ">=3.7.1"
   }
 }

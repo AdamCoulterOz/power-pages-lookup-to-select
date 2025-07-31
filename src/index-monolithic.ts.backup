@@ -1,0 +1,572 @@
+import pluralize from 'pluralize';
+import * as Select2 from 'select2';
+
+interface PowerPagesShell {
+    getTokenDeferred(): JQuery.Deferred<string>;
+}
+
+interface ValidateLoginSessionFunction {
+    (data: any, textStatus: string, jqXHR: JQuery.jqXHR, callback: Function): void;
+}
+
+declare const shell: PowerPagesShell;
+declare const validateLoginSession: ValidateLoginSessionFunction;
+
+// Entity configuration for single entity
+interface EntityConfig {
+    entitySetName: string;
+    idFieldName: string;
+    textFieldName: string;
+    targetTableLogicalName: string;
+    displayName?: string;
+    viewId?: string;
+}
+
+// View layout structures from Power Pages DOM
+interface ViewLayoutColumn {
+    Type: number;
+    LogicalName: string;
+    [key: string]: any;
+}
+
+interface ViewLayoutConfiguration {
+    EntityName: string;
+    PrimaryKeyName: string;
+    [key: string]: any;
+}
+
+interface ViewLayout {
+    Id: string;
+    ViewName: string;
+    Configuration: ViewLayoutConfiguration;
+    Columns: ViewLayoutColumn[];
+    [key: string]: any;
+}
+
+// Data item with entity metadata
+interface DataItemWithMetadata {
+    [key: string]: any; // Original entity fields
+    _entitySetName: string;
+    _targetTableLogicalName: string;
+    _idFieldName: string;
+    _textFieldName: string;
+    _entityDisplayName: string;
+}
+
+// OData response structure
+interface ODataResponse {
+    value: DataItemWithMetadata[];
+    [key: string]: any;
+}
+
+// getData function signature
+type GetDataFunction = (
+    searchTerm: string,
+    successHandler: (data: ODataResponse) => void,
+    errorHandler: (error: any) => void
+) => void;
+
+// Custom renderer functions
+type OptionRenderer = (result: Select2.DataFormat | Select2.GroupedDataFormat | Select2.LoadingData) => string | JQuery | null;
+type ResultRenderer = (selection: Select2.DataFormat | Select2.GroupedDataFormat | Select2.IdTextPair | Select2.LoadingData, container: JQuery) => string | JQuery;
+
+// Plugin options interface
+interface LookupToSelectOptions {
+    // Initial value configuration
+    initialValue?: {
+        id: string;
+        text: string;
+        entityLogicalName?: string;
+    };
+
+    // Single entity configuration (legacy)
+    entitySetName?: string;
+    idFieldName?: string;
+    textFieldName?: string;
+    targetTableLogicalName?: string;
+    displayName?: string;
+
+    // Polymorphic entity configuration
+    entities?: EntityConfig[];
+
+    // Data source options
+    data?: Select2.DataFormat[];
+    getData?: GetDataFunction;
+
+    // Grouping options
+    groupByFieldName?: string;
+    groupByTextFieldName?: string;
+    groupByEntity?: boolean;
+
+    // Select2 configuration
+    placeholder?: string;
+    minimumInputLength?: number;
+    delay?: number;
+
+    // Custom rendering
+    optionRenderer?: OptionRenderer;
+    resultRenderer?: ResultRenderer;
+}
+
+// Merged settings interface
+interface LookupToSelectSettings extends Required<Pick<LookupToSelectOptions, 'placeholder' | 'delay'>> {
+    initialValue?: {
+        id: string;
+        text: string;
+        entityLogicalName?: string;
+    };
+    entities?: EntityConfig[];
+    data?: Select2.DataFormat[];
+    getData?: GetDataFunction;
+    groupByFieldName?: string;
+    groupByTextFieldName?: string;
+    groupByEntity?: boolean;
+    minimumInputLength?: number;
+    optionRenderer?: OptionRenderer;
+    resultRenderer?: ResultRenderer;
+}
+
+// Extend jQuery interface
+declare global {
+    interface JQuery {
+        lookupToSelect(options?: LookupToSelectOptions): JQuery;
+    }
+}
+
+function safeAjax(ajaxOptions: JQuery.AjaxSettings): JQuery.Promise<any> {
+    const deferredAjax = jQuery.Deferred<any>();
+
+    shell.getTokenDeferred().done(function (token: string) {
+        // add headers for AJAX
+        if (!ajaxOptions.headers) {
+            jQuery.extend(ajaxOptions, {
+                headers: {
+                    "__RequestVerificationToken": token
+                }
+            });
+        } else {
+            ajaxOptions.headers["__RequestVerificationToken"] = token;
+        }
+        jQuery.ajax(ajaxOptions)
+            .done(function (data: any, textStatus: string, jqXHR: JQuery.jqXHR) {
+                validateLoginSession(data, textStatus, jqXHR, deferredAjax.resolve);
+            }).fail(deferredAjax.reject); //AJAX
+        }).fail(function (this: any) {
+            deferredAjax.rejectWith(this, arguments); // on token failure pass the token AJAX and args
+        });    return deferredAjax.promise();
+}
+
+// Helper function to parse base64 encoded view layouts
+function parseViewLayouts(base64Data: string): ViewLayout[] | null {
+    try {
+        const jsonString = atob(base64Data);
+        return JSON.parse(jsonString);
+    } catch (error) {
+        console.error("Error parsing view layouts data:", error);
+        return null;
+    }
+}
+
+// Helper function to determine text field name based on entity type and columns
+function getTextFieldName(entityName: string, columns: ViewLayoutColumn[]): string | null {
+    // Extract the LogicalName from the first Type 0 (viewColumn) from the columns metadata
+    if (columns && Array.isArray(columns)) {
+        const firstViewColumn = columns.find(column => column.Type === 0);
+        if (firstViewColumn && firstViewColumn.LogicalName) {
+            return firstViewColumn.LogicalName;
+        }
+    }
+
+    // If no column metadata is available, we cannot safely determine the text field
+    // Return null to indicate that manual configuration is required
+    return null;
+}
+
+// Helper function to extract entity configuration from DOM
+function extractEntityConfigFromDOM(fieldId: string): EntityConfig[] | null {
+    const lookupModal = jQuery(`#${fieldId}_lookupmodal`);
+    if (lookupModal.length === 0) {
+        return null;
+    }
+
+    const entityGrid = lookupModal.find('.entity-grid');
+    if (entityGrid.length === 0) {
+        return null;
+    }
+
+    const viewLayoutsData = entityGrid.attr('data-view-layouts');
+    if (!viewLayoutsData) {
+        return null;
+    }
+
+    const viewLayouts = parseViewLayouts(viewLayoutsData);
+    if (!viewLayouts || !Array.isArray(viewLayouts)) {
+        return null;
+    }
+
+    // Extract entity configurations from view layouts
+    const entities = viewLayouts.map(layout => {
+        const config = layout.Configuration;
+        const entityName = config.EntityName;
+        const primaryKeyName = config.PrimaryKeyName;
+        
+        // Determine the text field name from column metadata
+        // This extracts the LogicalName from the first Type: 0 (viewColumn) 
+        // which represents the primary display field for the entity in this view
+        const textFieldName = getTextFieldName(entityName, layout.Columns);
+        
+        // If we cannot determine the text field name, skip this entity
+        if (!textFieldName) {
+            console.warn(`Unable to determine text field for entity '${entityName}' - no Type 0 columns found in view layout. Manual configuration required.`);
+            return null;
+        }
+        
+        // Generate entity set name (pluralize)
+        const entitySetName = pluralize(entityName);
+
+        return {
+            entitySetName: entitySetName,
+            idFieldName: primaryKeyName,
+            textFieldName: textFieldName,
+            targetTableLogicalName: entityName,
+            displayName: layout.ViewName || entityName,
+            viewId: layout.Id
+        } as EntityConfig;
+    }).filter((entity): entity is EntityConfig => entity !== null); // Remove any null entities
+
+    return entities.length > 0 ? entities : null;
+}
+
+// Helper function to set lookup field values
+function setLookupValues(baseId: string, value: string, text: string, logicalName?: string): void {
+    jQuery(`#${baseId}`).val(value);
+    jQuery(`#${baseId}_name`).val(text);
+    if (logicalName) {
+        jQuery(`#${baseId}_entityname`).val(logicalName);
+    }
+    jQuery(`#${baseId}`).trigger("change");
+}
+
+jQuery.fn.lookupToSelect = function (options: LookupToSelectOptions = {}): JQuery {
+    const fieldId = this.attr('id');
+    if (!fieldId) {
+        throw new Error("lookupToSelect error: Element must have an id attribute");
+    }
+    
+    // Try to extract configuration from DOM first
+    const extractedEntities = extractEntityConfigFromDOM(fieldId);
+    
+    // Determine if we have explicit configuration or should use extracted data
+    const hasExplicitConfig = options.entitySetName || options.entities || options.data || options.getData;
+    
+    if (!hasExplicitConfig && !extractedEntities) {
+        throw new Error("lookupToSelect error: No configuration provided and unable to extract configuration from DOM. Please provide entitySetName/entities or ensure the lookup modal exists in DOM.");
+    }
+
+    // Use extracted entities if no explicit configuration is provided
+    if (!hasExplicitConfig && extractedEntities) {
+        // Always use polymorphic configuration, even for single entities
+        options.entities = extractedEntities;
+    }
+
+    // Convert single entity configuration to polymorphic format for consistency
+    if (options.entitySetName && !options.entities) {
+        options.entities = [{
+            entitySetName: options.entitySetName,
+            idFieldName: options.idFieldName!,
+            textFieldName: options.textFieldName!,
+            targetTableLogicalName: options.targetTableLogicalName!,
+            displayName: options.displayName || options.targetTableLogicalName!
+        }];
+        
+        // Clear the single entity properties to avoid confusion
+        delete options.entitySetName;
+        delete options.idFieldName;
+        delete options.textFieldName;
+        delete options.targetTableLogicalName;
+    }
+
+    // Validate configuration - now everything uses entities array
+    if (!options.entities && !options.data && !options.getData) {
+        throw new Error("lookupToSelect error: entities configuration is required for external data source if no getData is provided");
+    }
+
+    // validate entities configuration
+    if (options.entities) {
+        if (!Array.isArray(options.entities) || options.entities.length === 0) {
+            throw new Error("lookupToSelect error: entities must be a non-empty array");
+        }
+        
+        options.entities.forEach((entity, index) => {
+            if (!entity.entitySetName) {
+                throw new Error(`lookupToSelect error: entitySetName is required for entity at index ${index}`);
+            }
+            if (!entity.idFieldName) {
+                throw new Error(`lookupToSelect error: idFieldName is required for entity at index ${index}`);
+            }
+            if (!entity.textFieldName) {
+                throw new Error(`lookupToSelect error: textFieldName is required for entity at index ${index}`);
+            }
+            if (!entity.targetTableLogicalName) {
+                throw new Error(`lookupToSelect error: targetTableLogicalName is required for entity at index ${index}`);
+            }
+        });
+    }
+
+    // This is the easiest way to have default options.
+    const settings: LookupToSelectSettings = jQuery.extend({
+        // These are the defaults.
+        placeholder: "Search by typing",
+        delay: 250
+    }, options);
+
+    // Helper function to create OData query for an entity
+    function createODataQuery(entity: EntityConfig, searchTerm: string): string {
+        const select = `$select=${entity.idFieldName},${entity.textFieldName}&$orderby=${entity.textFieldName} asc`;
+        const filter = searchTerm ? `&$filter=startswith(${entity.textFieldName},'${searchTerm}')` : "";
+        return select + filter;
+    }
+
+    // Helper function to make API call for a single entity
+    function fetchEntityData(entity: EntityConfig, searchTerm: string): Promise<ODataResponse> {
+        return new Promise((resolve, reject) => {
+            const queryOptions = createODataQuery(entity, searchTerm);
+
+            safeAjax({
+                type: "GET",
+                url: `/_api/${entity.entitySetName}?${queryOptions}`,
+                contentType: "application/json",
+                headers: {
+                    "Prefer": "odata.include-annotations=*"
+                },
+                success: function(data: ODataResponse) {
+                    resolve(data);
+                },
+                error: reject
+            });
+        });
+    }
+
+    // handle data retrieval if getData function is not provided
+    if (!settings.getData && !settings.data) {
+        // All lookups are now handled the same way (polymorphic approach)
+        settings.getData = function (searchTerm: string, successHandler: (data: ODataResponse) => void, errorHandler: (error: any) => void): void {
+            const promises = settings.entities!.map(entity => {
+                return fetchEntityData(entity, searchTerm).then(data => {
+                    // add entity metadata to each result
+                    const enrichedData: DataItemWithMetadata[] = data.value.map(item => ({
+                        ...item,
+                        _entitySetName: entity.entitySetName,
+                        _targetTableLogicalName: entity.targetTableLogicalName,
+                        _idFieldName: entity.idFieldName,
+                        _textFieldName: entity.textFieldName,
+                        _entityDisplayName: entity.displayName || entity.targetTableLogicalName
+                    }));
+                    return { value: enrichedData };
+                });
+            });
+
+            Promise.all(promises)
+                .then(results => {
+                    // combine all results
+                    const combinedData: ODataResponse = {
+                        value: results.reduce((acc, result) => acc.concat(result.value), [] as DataItemWithMetadata[])
+                    };
+                    successHandler(combinedData);
+                })
+                .catch(errorHandler);
+        };
+    }
+
+    // generate select element to which select2 will be attached
+    const customSelectId = `${fieldId}_dwcSelect2`;
+
+    const sel = jQuery(`<select id='${customSelectId}'>`);
+    this.parent().after(sel);
+
+    // Handle initial value - prefer explicit option over DOM extraction
+    let initialId: string | undefined;
+    let initialText: string | undefined;
+    let initialEntityLogicalName: string | undefined;
+
+    if (settings.initialValue) {
+        // Use explicitly provided initial value
+        initialId = settings.initialValue.id;
+        initialText = settings.initialValue.text;
+        initialEntityLogicalName = settings.initialValue.entityLogicalName;
+    } else {
+        // Fall back to DOM extraction (existing behavior)
+        initialId = this.val() as string;
+        if (initialId) {
+            initialText = jQuery(`#${fieldId}_name`).val() as string;
+            // Note: entityLogicalName is not extracted from DOM in the fallback case
+            // as there's no standard DOM element for it in single-entity scenarios
+        }
+    }
+
+    if (initialId && initialText) {
+        sel.append(`<option value='${initialId}'>${initialText}</option>`);
+        
+        // Set the initial values in the underlying lookup fields
+        setLookupValues(fieldId, initialId, initialText, initialEntityLogicalName);
+    }
+
+    // define select2Config object
+    const select2Config: Select2.Options = {
+        placeholder: settings.placeholder,
+        minimumInputLength: settings.minimumInputLength,
+    };
+
+    // local data source config
+    if (settings.data) {
+        select2Config.data = settings.data;
+    }
+
+    // external data source config
+    if (settings.getData) {
+        select2Config.ajax = {
+            // delay request by specified amount
+            delay: settings.delay,
+            // define custom request logic
+            transport: function (params: any, success: (data: ODataResponse) => void, failure: (error: any) => void) {
+                settings.getData!(params.data.term, success, failure);
+            },
+            processResults: function (data: ODataResponse): { results: (Select2.DataFormat | Select2.GroupedDataFormat)[] } {
+                // Normalize data by adding metadata if missing (for external getData functions)
+                if (data && data.value && Array.isArray(data.value) && settings.entities) {
+                    data.value = data.value.map(item => {
+                        // If item already has metadata, keep it as-is
+                        if ((item as DataItemWithMetadata)._entityDisplayName) {
+                            return item as DataItemWithMetadata;
+                        }
+                        
+                        // Add metadata for external data
+                        let matchingEntity = settings.entities![0]; // Default fallback
+                        
+                        if (settings.entities!.length > 1) {
+                            // Try to match based on which entity's idFieldName exists in the item
+                            const foundEntity = settings.entities!.find(entity => 
+                                item.hasOwnProperty(entity.idFieldName)
+                            );
+                            if (foundEntity) {
+                                matchingEntity = foundEntity;
+                            }
+                        }
+                        
+                        return {
+                            ...item,
+                            _entitySetName: matchingEntity.entitySetName,
+                            _targetTableLogicalName: matchingEntity.targetTableLogicalName,
+                            _idFieldName: matchingEntity.idFieldName,
+                            _textFieldName: matchingEntity.textFieldName,
+                            _entityDisplayName: matchingEntity.displayName || matchingEntity.targetTableLogicalName
+                        } as DataItemWithMetadata;
+                    });
+                }
+
+                let formattedResponse: (Select2.DataFormat | Select2.GroupedDataFormat)[];
+                const isSingleEntity = settings.entities?.length === 1;
+
+                // grouping results if groupBy is provided
+                if (settings.groupByFieldName) {
+                    const grouped = data.value.reduce((acc: Record<string, Select2.GroupedDataFormat>, el: DataItemWithMetadata) => {
+                        const formattedElement: Select2.DataFormat & DataItemWithMetadata = jQuery.extend(
+                            {
+                                id: el[el._idFieldName],
+                                text: el[el._textFieldName]
+                            },
+                            el
+                        );
+
+                        const groupValue = formattedElement[settings.groupByFieldName!];
+                        const groupText = formattedElement[settings.groupByTextFieldName!];
+                        if (!acc[groupValue]) {
+                            acc[groupValue] = {
+                                text: groupText,
+                                children: []
+                            };
+                        }
+                        acc[groupValue].children!.push(formattedElement);
+                        return acc;
+                    }, {});
+                    formattedResponse = Object.values(grouped);
+                } else if (!isSingleEntity && settings.groupByEntity !== false) {
+                    // group by entity type for multi-entity lookups (default behavior)
+                    const grouped = data.value.reduce((acc: Record<string, Select2.GroupedDataFormat>, el: DataItemWithMetadata) => {
+                        const entityDisplayName = el._entityDisplayName;
+                        
+                        const formattedElement: Select2.DataFormat & DataItemWithMetadata = jQuery.extend(
+                            {
+                                id: el[el._idFieldName],
+                                text: el[el._textFieldName]
+                            },
+                            el
+                        );
+
+                        if (!acc[entityDisplayName]) {
+                            acc[entityDisplayName] = {
+                                text: entityDisplayName,
+                                children: []
+                            };
+                        }
+                        acc[entityDisplayName].children!.push(formattedElement);
+                        return acc;
+                    }, {});
+                    formattedResponse = Object.values(grouped);
+                } else {
+                    // flat list (single entity or groupByEntity disabled)
+                    formattedResponse = data.value.map((el: DataItemWithMetadata): Select2.DataFormat & DataItemWithMetadata => {
+                        return jQuery.extend(
+                            {
+                                id: el[el._idFieldName],
+                                text: el[el._textFieldName]
+                            },
+                            el
+                        );
+                    });
+                }
+
+                return {
+                    results: formattedResponse
+                };
+            }
+        }
+    }
+
+    // custom option rendering
+    if (settings.optionRenderer) {
+        select2Config.templateResult = settings.optionRenderer;
+    }
+
+    // custom result rendering
+    if (settings.resultRenderer) {
+        select2Config.templateSelection = settings.resultRenderer;
+    }
+
+    // initiate select2
+    sel.select2(select2Config);
+
+    // add onchange function to populate actual lookup
+    sel.on("change", function () {
+        const selectedValue = sel.val() as string;
+        const selectedOption = jQuery(`#${customSelectId} option:selected`);
+        const selectedValueLabel = selectedOption.text();
+        const selectedData = selectedOption.data('select2-data') as DataItemWithMetadata;
+
+        // Use the helper function to set all lookup values
+        const logicalName = selectedData && selectedData._targetTableLogicalName ? selectedData._targetTableLogicalName : undefined;
+        setLookupValues(fieldId, selectedValue, selectedValueLabel, logicalName);
+    });
+
+    // make select2 responsive
+    jQuery(`#${customSelectId}`).parent().find(".select2").css("width", "100%");
+
+    // hide original lookup
+    this.parent().hide();
+
+    return this;
+};
+
+// Export the plugin for module usage
+export default jQuery.fn.lookupToSelect;
+export { LookupToSelectOptions, EntityConfig, GetDataFunction };
