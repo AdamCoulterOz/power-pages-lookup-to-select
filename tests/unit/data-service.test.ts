@@ -69,12 +69,13 @@ describe('Data Service', () => {
             expect(result).toEqual(mockResponse);
         });
 
-        it.skip('should reject on API error', async () => {
+        it('should reject on API error', async () => {
             // Mock safeAjax to call the error callback synchronously
             mockSafeAjax.mockImplementation((ajaxOptions: any) => {
-                // Call error callback synchronously
+                // Call error callback synchronously (this is the reject function)
                 ajaxOptions.error('API Error');
-                return Promise.reject('API Error') as any;
+                // Return a resolved Promise since we're handling the error via callback
+                return Promise.resolve() as any;
             });
 
             await expect(fetchEntityData(mockEntity, 'test')).rejects.toBe('API Error');
@@ -132,11 +133,12 @@ describe('Data Service', () => {
             });
         });
 
-        it.skip('should handle errors from any entity fetch', async () => {
+        it('should handle errors from any entity fetch', async () => {
             mockSafeAjax.mockImplementation((ajaxOptions: any) => {
-                // Call error callback synchronously
+                // Call error callback synchronously (this is the reject function)
                 ajaxOptions.error('Fetch error');
-                return Promise.reject('Fetch error') as any;
+                // Return a resolved Promise since we're handling the error via callback
+                return Promise.resolve() as any;
             });
 
             const dataFunction = createPolymorphicDataFunction(mockEntities);
