@@ -13,7 +13,9 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "rebuild": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "prepublishOnly": "npm run rebuild"
   },
   "keywords": [
@@ -35,12 +37,33 @@
     "select2": "^4.1.0-rc.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.5",
     "@types/jquery": "^3.5.32",
+    "@types/node": "^20.8.0",
     "@types/pluralize": "^0.0.33",
     "@types/select2": "^4.0.63",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "jquery": ">=3.7.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/index.js"
+    ],
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }

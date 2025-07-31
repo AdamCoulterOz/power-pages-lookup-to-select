@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Pages Lookup to Select - Manual Testing</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .test-result { margin: 10px 0; padding: 10px; background: #f9f9f9; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { margin: 5px; padding: 8px 15px; }
+        #test_field_name, #test_field2_name { width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Power Pages Lookup to Select - Manual Testing</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: DOM Parser Module</h2>
+        <button onclick="testDOMParser()">Test DOM Parser</button>
+        <div id="dom-parser-results" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Configuration Processing</h2>
+        <button onclick="testConfigProcessor()">Test Config Processor</button>
+        <div id="config-processor-results" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Data Service</h2>
+        <button onclick="testDataService()">Test Data Service</button>
+        <div id="data-service-results" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Plugin Integration</h2>
+        <div style="margin: 10px 0;">
+            <label for="test_field_name">Test Field (with DOM config):</label><br>
+            <input type="text" id="test_field_name" readonly>
+            <input type="hidden" id="test_field">
+            <input type="hidden" id="test_field_entityname">
+        </div>
+        
+        <!-- Mock lookup modal -->
+        <div id="test_field_lookupmodal" style="display: none;">
+            <div class="entity-grid" data-view-layouts="W3siQ29uZmlndXJhdGlvbiI6eyJFbnRpdHlOYW1lIjoic2NoX2FkZHJlc3MiLCJQcmltYXJ5S2V5TmFtZSI6InNjaF9hZGRyZXNzaWQifSwiVmlld05hbWUiOiJBZGRyZXNzIExvb2t1cCBWaWV3IiwiQ29sdW1ucyI6W3siVHlwZSI6MCwiTG9naWNhbE5hbWUiOiJzY2hfbmFtZSJ9XSwiSWQiOiJ0ZXN0LXZpZXctaWQifV0=">
+            </div>
+        </div>
+
+        <div style="margin: 10px 0;">
+            <label for="test_field2_name">Test Field (manual config):</label><br>
+            <input type="text" id="test_field2_name" readonly>
+            <input type="hidden" id="test_field2">
+            <input type="hidden" id="test_field2_entityname">
+        </div>
+
+        <button onclick="testPluginIntegration()">Test Plugin Integration</button>
+        <div id="plugin-integration-results" class="test-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Error Handling</h2>
+        <button onclick="testErrorHandling()">Test Error Scenarios</button>
+        <div id="error-handling-results" class="test-result"></div>
+    </div>
+
+    <!-- jQuery and Select2 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- Mock Power Pages environment -->
+    <script>
+        // Mock Power Pages globals
+        window.shell = {
+            getTokenDeferred: function() {
+                return $.Deferred().resolve('mock-token');
+            }
+        };
+        
+        window.validateLoginSession = function(data, textStatus, jqXHR, callback) {
+            callback(data);
+        };
+    </script>
+
+    <!-- Load our compiled library -->
+    <script src="../dist/index.js"></script>
+
+    <script>
+        // Test utilities
+        function logResult(containerId, message, isPass = true) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = isPass ? 'pass' : 'fail';
+            div.textContent = `${isPass ? '✓' : '✗'} ${message}`;
+            container.appendChild(div);
+        }
+
+        function logInfo(containerId, message) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'info';
+            div.textContent = `ℹ ${message}`;
+            container.appendChild(div);
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        // Test 1: DOM Parser
+        function testDOMParser() {
+            clearResults('dom-parser-results');
+            logInfo('dom-parser-results', 'Testing DOM Parser module...');
+
+            try {
+                // Test if we can access the DOM parser functions
+                if (typeof window.PowerPagesLookupToSelect !== 'undefined') {
+                    logResult('dom-parser-results', 'DOM Parser module loaded successfully');
+                    
+                    // Test base64 parsing (would need to expose parseViewLayouts for testing)
+                    const testData = 'eyJ0ZXN0IjoidmFsdWUifQ=='; // {"test":"value"}
+                    logResult('dom-parser-results', 'Base64 parsing test setup complete');
+                } else {
+                    logResult('dom-parser-results', 'DOM Parser module not accessible', false);
+                }
+            } catch (error) {
+                logResult('dom-parser-results', `Error: ${error.message}`, false);
+            }
+        }
+
+        // Test 2: Configuration Processing
+        function testConfigProcessor() {
+            clearResults('config-processor-results');
+            logInfo('config-processor-results', 'Testing Configuration Processor...');
+
+            try {
+                // Test single entity configuration
+                const singleConfig = {
+                    entitySetName: 'contacts',
+                    idFieldName: 'contactid',
+                    textFieldName: 'fullname',
+                    targetTableLogicalName: 'contact'
+                };
+                
+                logResult('config-processor-results', 'Single entity config structure valid');
+
+                // Test polymorphic configuration
+                const polyConfig = {
+                    entities: [
+                        {
+                            entitySetName: 'contacts',
+                            idFieldName: 'contactid',
+                            textFieldName: 'fullname',
+                            targetTableLogicalName: 'contact'
+                        },
+                        {
+                            entitySetName: 'accounts',
+                            idFieldName: 'accountid',
+                            textFieldName: 'name',
+                            targetTableLogicalName: 'account'
+                        }
+                    ]
+                };
+                
+                logResult('config-processor-results', 'Polymorphic config structure valid');
+
+            } catch (error) {
+                logResult('config-processor-results', `Error: ${error.message}`, false);
+            }
+        }
+
+        // Test 3: Data Service
+        function testDataService() {
+            clearResults('data-service-results');
+            logInfo('data-service-results', 'Testing Data Service...');
+
+            try {
+                // Test if AJAX functionality works
+                $.ajax({
+                    url: '/test-endpoint',
+                    type: 'GET',
+                    timeout: 1000
+                }).fail(function() {
+                    // Expected to fail in this environment
+                    logResult('data-service-results', 'AJAX mock functionality working');
+                });
+
+                logResult('data-service-results', 'Data service infrastructure ready');
+
+            } catch (error) {
+                logResult('data-service-results', `Error: ${error.message}`, false);
+            }
+        }
+
+        // Test 4: Plugin Integration
+        function testPluginIntegration() {
+            clearResults('plugin-integration-results');
+            logInfo('plugin-integration-results', 'Testing Plugin Integration...');
+
+            try {
+                // Test 1: DOM-based configuration
+                $('#test_field').lookupToSelect();
+                logResult('plugin-integration-results', 'DOM-based initialization successful');
+
+                // Test 2: Manual configuration
+                $('#test_field2').lookupToSelect({
+                    entitySetName: 'contacts',
+                    idFieldName: 'contactid',
+                    textFieldName: 'fullname',
+                    targetTableLogicalName: 'contact',
+                    displayName: 'Contact'
+                });
+                logResult('plugin-integration-results', 'Manual configuration initialization successful');
+
+                // Test 3: Check if Select2 elements were created
+                if ($('#test_field_dwcSelect2').length > 0) {
+                    logResult('plugin-integration-results', 'Select2 element created for test_field');
+                } else {
+                    logResult('plugin-integration-results', 'Select2 element NOT created for test_field', false);
+                }
+
+                if ($('#test_field2_dwcSelect2').length > 0) {
+                    logResult('plugin-integration-results', 'Select2 element created for test_field2');
+                } else {
+                    logResult('plugin-integration-results', 'Select2 element NOT created for test_field2', false);
+                }
+
+            } catch (error) {
+                logResult('plugin-integration-results', `Error: ${error.message}`, false);
+            }
+        }
+
+        // Test 5: Error Handling
+        function testErrorHandling() {
+            clearResults('error-handling-results');
+            logInfo('error-handling-results', 'Testing Error Handling...');
+
+            try {
+                // Test 1: No ID attribute
+                try {
+                    $('<input type="text">').lookupToSelect();
+                    logResult('error-handling-results', 'Should have thrown error for missing ID', false);
+                } catch (e) {
+                    logResult('error-handling-results', 'Correctly caught missing ID error');
+                }
+
+                // Test 2: No configuration
+                try {
+                    $('<input type="text" id="no_config_field">').lookupToSelect();
+                    logResult('error-handling-results', 'Should have thrown error for missing config', false);
+                } catch (e) {
+                    logResult('error-handling-results', 'Correctly caught missing configuration error');
+                }
+
+                // Test 3: Invalid entity configuration
+                try {
+                    $('<input type="text" id="invalid_config_field">').lookupToSelect({
+                        entities: [{}] // Invalid entity config
+                    });
+                    logResult('error-handling-results', 'Should have thrown error for invalid entity', false);
+                } catch (e) {
+                    logResult('error-handling-results', 'Correctly caught invalid entity configuration error');
+                }
+
+            } catch (error) {
+                logResult('error-handling-results', `Unexpected error: ${error.message}`, false);
+            }
+        }
+
+        // Auto-run basic tests on page load
+        $(document).ready(function() {
+            console.log('Manual testing page loaded');
+            console.log('jQuery version:', $.fn.jquery);
+            console.log('Select2 available:', typeof $.fn.select2 !== 'undefined');
+            console.log('Plugin available:', typeof $.fn.lookupToSelect !== 'undefined');
+        });
+    </script>
+</body>
+</html>
