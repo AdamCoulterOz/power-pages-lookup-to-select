@@ -1,0 +1,13 @@
+<fetch version="1.0" mapping="logical" savedqueryid="de698196-670b-4933-b663-17c6a7166ce0" paging-cookie="pagingcookie.xml">
+  <entity name="sch_office">
+    <attribute name="sch_officeid"/>
+    <attribute name="sch_name"/>
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0"/>
+    </filter>
+    <link-entity alias="a_45b120b266ef4a869a1e983da8e0afee" name="sch_address" to="sch_address" from="sch_addressid" link-type="outer" visible="false">
+      <attribute name="sch_street"/>
+      <attribute name="sch_city"/>
+    </link-entity>
+  </entity>
+</fetch>

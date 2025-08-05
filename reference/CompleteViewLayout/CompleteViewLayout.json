@@ -1,0 +1,613 @@
+{
+    "Base64SecureConfiguration": "hpVGl7pyUmofCAbtSgG7PUBEaSXMGm6f93+VsHejSeLs094X7ar6F95KU99aRWiMpKuuLvAEBdZAbTVZ30hbibeAo0/oywpVUGTOdGAnNvmSfxRVc3ejeQd2k9SYnd2p6pIxGfC3ztT51Be1KbYuCyN47jCClo1bYZvivRcff+jssum46ma71qHDUVzlBHSA+bTJCFdTPs52oTVIumD6bW3uYm+C4l29SMeH//1BvFXs9s+VJIidv8TUmASes+SBbaWZiAVuZfBC+etN9gDIzEEzOubNBV3AnKHa2LuqOkXEGB+/8bQnd0/E9fS+W/hFxPtY+7NLYPm5yoGDdJgxmKv6bAUBV/WI+wDPghsPO4YgaLv37KIsl7mAhk0VPvIRIIS+WuG2IxsfJLI7VGQKk1ez7Xp3WlwuJqLECMozPTttLcwhs7535Kh7C9ycXZ6o5QuIcce6kEni9kifD4jEM8QFE43m9fOfCtk3yQzSMmr4T4qsRjXuGYv613njPlXr0ZJ0k/6zx9m3qBccYmjCOHj2V3smSC3/NsaDfOVisPhHfjNQs4lKrAMIoBF/ZV3C72Unuhe0aHWvDYk4WJlDGukJhvu6srbxdyomvvg2WFlL5fOqXF+W4eG1flCHZVmEQDKHARq4RLm/3pO4Blmud0EA94cOG6Xt/la17fiMX9e2U1l625d6Z0OrMyCltoZ96cy2eXjjwf2wC/49yN7PwU5rBfEbJfqWh9F+ftKRfi1O00BGw8RLalwRlc6DCli+H4RpcyAG88TvITwHMLTNz1wThcGGewFQbFBZHILhUtK/3p10QTts+knG4YTA/TOrCIsDbMaBKeuCxPUEqqXN5yGhUX55D5ELZzZY7TYm22BLOWqRIDr3c+sTEehfZ3Kw4xlC3tw3EylNyyflwIlCZfhp4QDQBRhagu4bIFKMeFiac6YaCJEUID7PUQ6H+k/OHlouqZzqR/lsU1RXkVwHM+lnLjlI+p7/ts1blu9SfmcHP1hVLyjfLnEi6r24iaoUGMN88dBwuCRfeVbsUUajBVQwRMCqI9Vs5IWHps1zR5vvgf/WiT5t25fVocOUWvzmuz8cLunU/D3ZH8+bnbq7ERTkT7vQM9Jbip4NZgnpyto/ebC+AjUko4uNf20GPMr+Ek3YwMlRicE9c/5oYoDTjIdKtFX2ccnjF7wS/E01LjyMioSULHygVfJHb60MbtUrZWr62+GLXdIeTcyqxId8wMnGKMub1+MSBiE9l+B1frvXpLRm63zgwIe7uoLo5mqRJqDEQl+IB0EJFlbxrtelnv6ObT3AYcQT+HAy4x25Axj6UZG9TQ52L9ZOZSNFBLajankl87yCp660SkMK22VdqowqCwutGvTkjrBCo4pP7XDjFSpbabUIX5VEkvC4ojriQc3tGzlQ8hSqppsq/KrcwYTCd8WnFM3t8VsrHWi6Xn7Ts7Se/sED3S6EhrQvXmfJggPI7KbRiLWxFzB8YzeQoWvXnNj2mmNofdE3vPbk2hamN3w/WkePsb+2+2Tddt8ShMionKhgCysxso9m4hKYVFCDJRuTAagSWFxXSc6222vOZ2fjCGTZOXczcthzoGZvHcsgjlkuK0/nzltMxHdfE7EvdJ9+dx60oHC+zPQeRJIaffM7nWJ5m/BZd08cfRcN6X7awux8l5jWb/oGFq4BU8VVlzkcWEiDJrDR/DZ9rOnBDfIsLyt1XTwWlo+XR8w6oE4DVgbGT8K/Hkdupi8MbzXUDG9IlPRtO5ZeZ+I+NYxEC4Kct6ZnSuyAiMhiBb5+aEx1zPYohHz6f8JCQpZNe5ZuOeVtsBj7sg+0AVBeckUJBs0pcXAAECSgw2WWQh0ktTSRL4GlTLzs21oK7EtRrGqgiSc8RL6rMm7n12hSIu4/IoSYS/HO0Njxr9h9lI44PUVKublTrznqds1xb3WX7KeM3BVxuGQf/KTK7gEitS0u/RwxClOKK+qFlNh9aswLSmDypp0cD7w5I/GDFqlEXkgDtwXedZJHWMW/6TaqnleztNQnJEyKn+KD8JPT1kkf2zHyrK6EYEY5iKtJDyIXoswjx1GKIMNvP4y6sjKPoUt7cXQ7FKAHKVKJZGzGo3E6Nr7TcCoNUuBGfbHPIgWy5PPrXtSxeZmTx7u+7MeYH9z57yplOejyRfKIyZxwCnmsJlNqaXyi01q4gLf+xhZILvcCAN9YNnbzjMTpcDsSwaRKpDMArIo0Gb1XJ1zR/sFZYeC19s1U2qrHdanBb3Wpag/1mddqtkWNMuK+zjajvt1WDtymJtIusGOkTf468/PHfH3a5toH8ZyFG9jTyRc0Z/tgX2IeOD7PWR/jcdFLccZ4zhEzVI/vDpil5SM51MhYxtB69b2ZMWH03Obd7mUOeJwZqsZQpoIJDbuPL/mJgVNsgWIjdO5L+sfA8KBg8D3Cxbt/jvdR6Z5r2cR6vSxSxN2tHsdSrBJq46p1KShbFAKBLJH07RsxuWWnWGIgOrhv4aVKFtgvG+762BRdn82zsjtVrV+/MqU6BZr+ZPGL8TER1hm5Vcp5dZNbBdc1Llx4YdOQ5KJjUe4Jqi2pj9EPMzxZ4wixnap/nf3JzMEbOAiqJbiVsvg3v4I0tyT34VkyagefscH47XnpnJO1BJ1JCsQYWiwG/4sMKG0aniS1bhSI8/0iO7en6qfo5mV3KEglz0TtY76k0yI1CPc+SpNlFCz7oKMWReDoMuUcWOFFRYRe4cnfROhiFMJq2771oRaVyZgJc84tUZvyjjyp6haIY6Rv4KJkNozh5bcPNy2RKS8j2KfI/OENUrgrWsaJisTjxF1uiTbZeILME9RhllhlSI5I/QTK7SAgVl+EqH6gJJ6+suiMwjbmJWVhS6enHbf3Y8W88hnRN5ndFPOfnYmwznJjObl+WLZSMiXxzCJ5ZUEgNG4WN6asuIuo5aAWdfe3sAFoAAZU3+kOKVRapgkzGqufJvXfZe0rfApggOKnAx4TkpjaiFavn7fFieRVpNtDjZlcFrORdvzJzu/jDRMOhlIkSOLubWbnyys+4DM3042m/tyJqYmQurGzDp4psO0jG/SqX/EKwifrNV9jvyZTCSy6inUsYGPgAy6mBiatxJfovUdEwqZ4LkUd+8efwwq8z4K+WNUgb+ClvLdqwFJbkBtwF4vZDtj4hYkCCraQBs58QSvBN6RRE+Dkn/bZqllEFdnm8kRQLNXKZEuVu/N/RpzEKZ+oMKzZdjObS+Ajlhj3m0njlT1xpaDP9gZCV4Xchx9mmvsLzteJdUoR3s4nc0DyBO0pIGyDy0B0Udri3pounOlAyUphVRCCXV/8HAAzX38G46qQdyFdCf5dSelGRnt+s0UiOElHt1+DexeUnpHmOFmjYN6SIYFRiSrltvrl52S1sSnl4NFy7yqfqE1P46UM3kAj+5FbnNh1kKeqOmDuoUUmsWrNfparo1WJIK5WbYO9SuXm9Wt6CZt6NiMwE8V2q7qdtxgJZGvC0P97MsirbWNH6wkCJ5PqpbkXFCiBikP9NH6x68vyh7UGFgulABkoLeTkoUewbGRrQxgVsb0HEVpY7iWfoW3/VzZ/wzC9QcH9X2hs/W5g3Px9f5CsN4aGEu4Us+Fq/GLcoBC19vE70JYr86zXbeeYSiEJxzTpTx9uIsf6e/qOKrIXLTB3XuIfG+L4WpepKL8VMfEsVWkQRNcm3wSUWO5q8G2H4689aT4APpjdRoeN2T8K0NUKuCL3A5Yyke+o1I8CyEIaLN1v9D/W2fMkQqnCb+SjokUCZiLWMEORawYqYiBBp5v3wKSs5OkH0f+ZTuXyCsUrBNqIn5sqBqjCV0zH/1AfL9/Y3dSloincnnHqGTUnIdelFOWyyGho3mksf0Y1DEmXxiRCSGRA3wtQk+2asVHHvUioZuTHYZuLHtDsaiPoV0KlssZRspfnMoJvhZwwHFWAq6Tr4ZyBGpojzPEuaierqUjZxgfBZ+a10d62bdEdCMSjbGQLlLcU+KCzZoZt+9o6KtvZWb9aGsAttDQmYiYGCw5S7iXNZoBkC2frFLkdRVZG0X5Qouat/N/As+IH3oRHIUqoDrycmvFgs+14K2pT+ikmLREHIvx40BCiPYeciePROYiFUmxnfqQrs9nCcAXpGQhWhqZa80LO4gIdJvvwrd1stEWToejdB1roy2p5blwcFqorVZ7YZVs+zYe6ksr5qspZ1nRwhZFFxX69spoqaoBFFehKcahl3vBpYT3r+SWhg2xn3TnItsczH9SByxdP57YMzO5cpP7wI57ERN7T1CgkcZEq4BLa/cTRnU47gIZBBbELkC1UzncLyvtlbjNCjlklyuIrcYZLwDOWjfo16nVmTw5kRUSkdapfI2yOpnl7SO9l07XwMTGGyOMcfRDLONjO+dLzYE/0I1GZO1hcf5h88JMf3cMkuICB12qbz6uJ4+H5gwUHMiSNJ0DpNiNr1B+5bdqi7Dvikh3XGMOfAeLtWjWwqNCiPgqpMn33N09OGLoI5S2vsCOCma9zkuq84+AKV8hUDIBtXdPsVD1wPPHd0plz8yhm3QEi/vBEFUTXdDl94qoJMMUprrfnOBNhOGbglCYe0guRfDm2GQh5E7iScvNdYZ8kAndNli45t9bO80XttV5+pLNWyflw2DZ5FRZH5XlLdvpjmWGdgX2jNDCuCkXkzzTl5JEKuVVSg+2qXY8GVd1bzROAqIatr1MtcaZtYorZt+xiyM+YsGYdvELoEPDyidJXWxLqLUkLIQeLXXt4ta2lEjmxo8j/hURUapodEcK3qsxz6vIo6l0iZKHhcGwoCK6lwhngVT/QkVkj1HKibSbYKW8aGFuizNHNngEvs8HlDAScCqQZRygEz5sQNHs4ZNM2zZo5UaYdm4FyArwSZI8hYM+Swi1T/0sgxCpdEyj+57Ap7VG2fTfYNDbSluf6I2XIt8Uy1MiMID/haRggYCmGduHQduNAT8SjfUYvFQ0Y1WPfGHKhgnFqOJZ2eADvHfj8f9YF82pJALflatqiaI8MKQ8kjiATy4OgaO5mqoQUZAY6eVLE0p+z1iSKYVNXTgfzbprsISGb+a4KgSj5JPCslT8+PyOgy3+TYmteeWfNWrgIrSydE30arVc7A1EXRcfV5Pw9NcDrBNuprnUNQED7l0IOHubc14gxyP4P82TCTddOJnNmZEq/fc+GBhpHyW0vPZwjspIh6sJZXC5qONfBPg+gNRDoikR+SRmKq4nnlWWfqgd9Yc/UkszZHHPyERY5OMkH7363atzmNKgIt4Ug8gOBhm12ZLBjAkTczcCS07fHjfk0IXMP3UM9+JrtepntiYlfSBQmJ4Fgr2O4X9R1toRoDYZVtGmCRZAyc0GF+zSIH/9ISGJAj9gDcH9AARL35ObyB2Q3sWFjac9Isujh/z7KTIvakQUmjKyR+qAzbA2UmqunAd4sj6HMCE7ePDMug0ncqfI8m6FnlUpvoqZkob5aR0Rj/H1Ntml5Lt4F6tLnGis+ctv2G9L4mBpsbM2+uy0wAuDwG1RGj8vfo0gU6IFHON0MrpSNDSvtHz2l1OKblghz6+F6ZSlfIiMbt/xiR1/6g66jdXEGYA3KOIzJ8ZfxzaQgN0rIEQvsyDHjDsjyQr9ueT6vW2zkHPqiJOhLndWwP5AyP1pLaHGjg+9kAifO47xT/+3+11NmV+CfBC6tdO4TGXnJ+lmBaQMHrvMncnVyQTFBJBLkD7p9Ct6XZ88SeF45ZMQq4aE5yyjk5XX6FOLGN6l6cTG8oIvWSQN8E6D43pnRKEHwOc02539zm0LjOZVs+qukHonI6PXgH+v31kfAXhT10UKgqDeQMifwm+xJWc7h72PxBe2qx7/XBjJMDXOO6vduUV/yBstc3vhSYITpeiH0ok3U1g0pn8xbD9A3hHdyrDXDev28tYZRARtUSjQmQOEGtQuYsspPohxsQpL/RKb5dgUqRL7phJaDuEvx0cX52o15rd+55xLcaUHiJ1Qx2W15eTmzS3pCgifTrSjBdWpq7+N8neu30bQi1sT/aCA1epi6ozcFIoM4jG4B21uLykctNsi6mHhk5xtP92l9YUqXEmP5GTpKl5C6qkWHVW9hMyhiSf1/aAmc97VQTjK2tRDsYqbj/FIhpSpwHyaKsY1KZoGAtJw34kIBgSYYt3UsqFpikcC4GLr3ldxPBLYxcctqIybtAPTacrtguPbs6ZcsJi6B8UFL7npO0m4IvWytstxE5XPivdIfp3+wLbIzsAgfqhSdyLIudrWIfl991wQxrCjpSyshFyg5L/pR26xKXrwRCLo86/tv7rt53i9rhSvX3s55ZR8GYIw0gBCpcTSJ/jXcWevnvfw0l7gFG4uptm9trnBTyWsPSmsA1kP0NO636M5feLdl4D7JHCdwGmtaJwQhjf++h/feZ/A+R3oplYu3soW/Oo3yQkED/GiQdqbgBpciWCtIBZp1gnkbTC+qqW46FWHLG3YpRq0vh/q2dUR4a1/zs/wjXOff9HgpLXYFTYo=",
+    "Columns": [
+        {
+            "LogicalName": "col-select",
+            "Name": "\u003cspan class=\u0027fa fa-check\u0027 aria-hidden=\u0027true\u0027\u003e\u003c/span\u003e \u003cspan class=\u0027visually-hidden\u0027\u003eSelect\u003c/span\u003e",
+            "SortDisabled": true,
+            "Type": 1,
+            "Width": 20,
+            "WidthAsPercent": 4.1407867494824018
+        },
+        {
+            "LogicalName": "sch_name",
+            "Metadata": {
+                "AttributeType": 14,
+                "AttributeTypeName": {
+                    "Value": "StringType"
+                },
+                "AutoNumberFormat": "",
+                "CanBeSecuredForCreate": false,
+                "CanBeSecuredForRead": false,
+                "CanBeSecuredForUpdate": false,
+                "CanModifyAdditionalSettings": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "canmodifyadditionalsettings",
+                    "Value": true
+                },
+                "ColumnNumber": 27,
+                "CreatedOn": "2025-07-23T11:55:56.0870016",
+                "DatabaseLength": 1700,
+                "Description": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "",
+                            "LanguageCode": 1033,
+                            "MetadataId": "1b07fba1-d4cf-437c-99aa-d927885df59f"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "",
+                        "LanguageCode": 1033,
+                        "MetadataId": "1b07fba1-d4cf-437c-99aa-d927885df59f"
+                    }
+                },
+                "DisplayName": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "Name",
+                            "LanguageCode": 1033,
+                            "MetadataId": "4b33f1c6-2ef8-4ae5-88d9-77f8a461e678"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "Name",
+                        "LanguageCode": 1033,
+                        "MetadataId": "4b33f1c6-2ef8-4ae5-88d9-77f8a461e678"
+                    }
+                },
+                "EntityLogicalName": "sch_office",
+                "Format": 1,
+                "FormatName": {
+                    "Value": "Text"
+                },
+                "FormulaDefinition": "",
+                "ImeMode": 0,
+                "IntroducedVersion": "1.0",
+                "IsAuditEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyauditsettings",
+                    "Value": true
+                },
+                "IsCustomAttribute": true,
+                "IsCustomizable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "iscustomizable",
+                    "Value": true
+                },
+                "IsDataSourceSecret": false,
+                "IsFilterable": false,
+                "IsGlobalFilterEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyglobalfiltersettings",
+                    "Value": false
+                },
+                "IsLocalizable": false,
+                "IsLogical": false,
+                "IsManaged": true,
+                "IsPrimaryId": false,
+                "IsPrimaryName": true,
+                "IsRenameable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "isrenameable",
+                    "Value": true
+                },
+                "IsRequiredForForm": true,
+                "IsRetrievable": true,
+                "IsSearchable": true,
+                "IsSecured": false,
+                "IsSortableEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyissortablesettings",
+                    "Value": false
+                },
+                "IsValidForAdvancedFind": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifysearchsettings",
+                    "Value": true
+                },
+                "IsValidForCreate": true,
+                "IsValidForForm": true,
+                "IsValidForGrid": true,
+                "IsValidForRead": true,
+                "IsValidForUpdate": true,
+                "IsValidODataAttribute": true,
+                "LogicalName": "sch_name",
+                "MaxLength": 850,
+                "MetadataId": "d9632ea7-a69c-4f44-af91-ef9a52d39778",
+                "ModifiedOn": "2025-07-23T11:55:56.0870016",
+                "RequiredLevel": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings",
+                    "Value": 2
+                },
+                "SchemaName": "sch_Name",
+                "SourceType": 0,
+                "SourceTypeMask": 0
+            },
+            "Name": "Name",
+            "SortDisabled": false,
+            "Type": 0,
+            "Width": 158,
+            "WidthAsPercent": 32.712215320910978
+        },
+        {
+            "LogicalName": "a_45b120b266ef4a869a1e983da8e0afee.sch_street",
+            "Metadata": {
+                "AttributeType": 14,
+                "AttributeTypeName": {
+                    "Value": "StringType"
+                },
+                "AutoNumberFormat": "",
+                "CanBeSecuredForCreate": true,
+                "CanBeSecuredForRead": true,
+                "CanBeSecuredForUpdate": true,
+                "CanModifyAdditionalSettings": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "canmodifyadditionalsettings",
+                    "Value": true
+                },
+                "ColumnNumber": 34,
+                "CreatedOn": "2025-07-23T11:55:45.96",
+                "DatabaseLength": 200,
+                "Description": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "",
+                            "LanguageCode": 1033,
+                            "MetadataId": "a4a85d88-eb55-4328-b282-ac7ada8dd55a"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "",
+                        "LanguageCode": 1033,
+                        "MetadataId": "a4a85d88-eb55-4328-b282-ac7ada8dd55a"
+                    }
+                },
+                "DisplayName": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "Street",
+                            "LanguageCode": 1033,
+                            "MetadataId": "4764fbca-4773-4f52-a775-96171d983929"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "Street",
+                        "LanguageCode": 1033,
+                        "MetadataId": "4764fbca-4773-4f52-a775-96171d983929"
+                    }
+                },
+                "EntityLogicalName": "sch_address",
+                "Format": 1,
+                "FormatName": {
+                    "Value": "Text"
+                },
+                "FormulaDefinition": "",
+                "ImeMode": 0,
+                "IntroducedVersion": "1.0",
+                "IsAuditEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyauditsettings",
+                    "Value": true
+                },
+                "IsCustomAttribute": true,
+                "IsCustomizable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "iscustomizable",
+                    "Value": true
+                },
+                "IsDataSourceSecret": false,
+                "IsFilterable": false,
+                "IsGlobalFilterEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyglobalfiltersettings",
+                    "Value": false
+                },
+                "IsLocalizable": false,
+                "IsLogical": false,
+                "IsManaged": true,
+                "IsPrimaryId": false,
+                "IsPrimaryName": false,
+                "IsRenameable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "isrenameable",
+                    "Value": true
+                },
+                "IsRequiredForForm": false,
+                "IsRetrievable": false,
+                "IsSearchable": false,
+                "IsSecured": false,
+                "IsSortableEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyissortablesettings",
+                    "Value": false
+                },
+                "IsValidForAdvancedFind": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifysearchsettings",
+                    "Value": true
+                },
+                "IsValidForCreate": true,
+                "IsValidForForm": true,
+                "IsValidForGrid": true,
+                "IsValidForRead": true,
+                "IsValidForUpdate": true,
+                "IsValidODataAttribute": true,
+                "LogicalName": "sch_street",
+                "MaxLength": 100,
+                "MetadataId": "2549362f-5d4f-4fd8-9d0b-e23c8737a300",
+                "ModifiedOn": "2025-07-23T11:55:45.96",
+                "RequiredLevel": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings",
+                    "Value": 2
+                },
+                "SchemaName": "sch_Street",
+                "SourceType": 0,
+                "SourceTypeMask": 0
+            },
+            "Name": "Street (Address)",
+            "SortDisabled": false,
+            "Type": 0,
+            "Width": 183,
+            "WidthAsPercent": 37.888198757763973
+        },
+        {
+            "LogicalName": "a_45b120b266ef4a869a1e983da8e0afee.sch_city",
+            "Metadata": {
+                "AttributeType": 14,
+                "AttributeTypeName": {
+                    "Value": "StringType"
+                },
+                "AutoNumberFormat": "",
+                "CanBeSecuredForCreate": true,
+                "CanBeSecuredForRead": true,
+                "CanBeSecuredForUpdate": true,
+                "CanModifyAdditionalSettings": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "canmodifyadditionalsettings",
+                    "Value": true
+                },
+                "ColumnNumber": 28,
+                "CreatedOn": "2025-07-23T11:55:45.2569984",
+                "DatabaseLength": 200,
+                "Description": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "",
+                            "LanguageCode": 1033,
+                            "MetadataId": "04e4fbd7-1a97-495c-94b4-6395b57e0602"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "",
+                        "LanguageCode": 1033,
+                        "MetadataId": "04e4fbd7-1a97-495c-94b4-6395b57e0602"
+                    }
+                },
+                "DisplayName": {
+                    "LocalizedLabels": [
+                        {
+                            "IsManaged": true,
+                            "Label": "City",
+                            "LanguageCode": 1033,
+                            "MetadataId": "5730abe5-b6f6-43d7-b4c6-a0fde54b1ea5"
+                        }
+                    ],
+                    "UserLocalizedLabel": {
+                        "IsManaged": true,
+                        "Label": "City",
+                        "LanguageCode": 1033,
+                        "MetadataId": "5730abe5-b6f6-43d7-b4c6-a0fde54b1ea5"
+                    }
+                },
+                "EntityLogicalName": "sch_address",
+                "Format": 1,
+                "FormatName": {
+                    "Value": "Text"
+                },
+                "FormulaDefinition": "",
+                "ImeMode": 0,
+                "IntroducedVersion": "1.0",
+                "IsAuditEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyauditsettings",
+                    "Value": true
+                },
+                "IsCustomAttribute": true,
+                "IsCustomizable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "iscustomizable",
+                    "Value": true
+                },
+                "IsDataSourceSecret": false,
+                "IsFilterable": false,
+                "IsGlobalFilterEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyglobalfiltersettings",
+                    "Value": false
+                },
+                "IsLocalizable": false,
+                "IsLogical": false,
+                "IsManaged": true,
+                "IsPrimaryId": false,
+                "IsPrimaryName": false,
+                "IsRenameable": {
+                    "CanBeChanged": false,
+                    "ManagedPropertyLogicalName": "isrenameable",
+                    "Value": true
+                },
+                "IsRequiredForForm": false,
+                "IsRetrievable": false,
+                "IsSearchable": false,
+                "IsSecured": false,
+                "IsSortableEnabled": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyissortablesettings",
+                    "Value": true
+                },
+                "IsValidForAdvancedFind": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifysearchsettings",
+                    "Value": true
+                },
+                "IsValidForCreate": true,
+                "IsValidForForm": true,
+                "IsValidForGrid": true,
+                "IsValidForRead": true,
+                "IsValidForUpdate": true,
+                "IsValidODataAttribute": true,
+                "LogicalName": "sch_city",
+                "MaxLength": 100,
+                "MetadataId": "2aad5c3d-5dfd-42cc-9096-36919d87966e",
+                "ModifiedOn": "2025-07-23T11:55:45.2569984",
+                "RequiredLevel": {
+                    "CanBeChanged": true,
+                    "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings",
+                    "Value": 2
+                },
+                "SchemaName": "sch_City",
+                "SourceType": 0,
+                "SourceTypeMask": 0
+            },
+            "Name": "City (Address)",
+            "SortDisabled": false,
+            "Type": 0,
+            "Width": 122,
+            "WidthAsPercent": 25.25879917184265
+        }
+    ],
+    "ColumnsTotalWidth": 483,
+    "Configuration": {
+        "ActionLinksColumnWidth": 20,
+        "ActivateActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "bd5ec730-1295-45b5-ba94-420c6e2493ec",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ActivateQuoteActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "5d2adf23-8e88-4971-9734-65fd181a65e0",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "AssociateActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "954c618a-bc68-4702-aac9-92159ba4c870",
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "CalculateOpportunityActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "40a7465a-025f-4242-a2c2-e683f95bfe5e",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "CalendarSettings": {
+            "Enabled": false,
+            "InitialDateString": "now",
+            "InitialView": 756150001,
+            "Style": 756150000,
+            "TimeZoneDisplay": 756150000
+        },
+        "CancelCaseActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "afc37e36-de8f-4a05-9818-1b28db81df5a",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "CloseIncidentActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "fd6270af-2fc8-4afc-960b-17d6b3809239",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ColumnOverrides": [],
+        "ConvertOrderToInvoiceActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "7de94191-7730-432f-a4ad-bfece6263de2",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ConvertQuoteToOrderActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "9fcdd2b0-1f29-465c-aa1b-d9477193e68f",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "CreateRelatedRecordActionLinks": [],
+        "DeactivateActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "31146192-dbc8-4309-be93-eb353d90270e",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "DeleteActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "3db20315-2b0c-49c5-84e8-4222b71bcd0a",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "DetailsActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "4421080a-f3c5-4e56-a07b-499f459b603a",
+            "Label": "\u003cspan class=\u0027fa fa-info-circle\u0027 aria-hidden=\u0027true\u0027\u003e\u003c/span\u003e View details",
+            "Modal": {},
+            "ShowModal": 0,
+            "Tooltip": "View details",
+            "Type": 0
+        },
+        "DisassociateActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "c0bbd320-557c-45a0-8e6d-9ac82fcd5148",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "EditActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "2ba4a0b2-9413-4f0a-b954-657237861e79",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "EnableEntityPermissions": true,
+        "EntityName": "sch_office",
+        "FetchXml": "fetchxml.xml",
+        "FilterByUserOptionLabel": "My",
+        "FilterQueryStringParameterName": "filter",
+        "FilterSettings": {
+            "Enabled": false,
+            "FilterQueryStringParameterName": "mf",
+            "TooltipText": "To search on partial text, use the asterisk (*) wildcard character. "
+        },
+        "GenerateQuoteFromOpportunityActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "b91d8f61-61c4-4392-8cc4-83c1c698d168",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "Id": "00000000-0000-0000-0000-000000000000",
+        "InsertActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "c9792dc2-9d3b-48f0-a145-6e67cebd1755",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ItemActionLinks": [],
+        "LanguageCode": 1033,
+        "LoseOpportunityActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "37cd7886-199b-4851-a60d-b9c4cc815d6e",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "MapSettings": {
+            "DefaultCenterLatitude": 0.0,
+            "DefaultCenterLongitude": 0.0,
+            "DefaultZoom": 12,
+            "DistanceUnit": 756150001,
+            "Enabled": false,
+            "InfoboxOffsetX": 25,
+            "InfoboxOffsetY": 46,
+            "PinImageHeight": 39,
+            "PinImageWidth": 32,
+            "RestUrl": "https://dev.virtualearth.net/REST/v1/Locations"
+        },
+        "ModalLookupAttributeLogicalName": "sch_location",
+        "ModalLookupEntityLogicalName": "sch_incident",
+        "ModalLookupGridPageSize": 0,
+        "PageQueryStringParameterName": "page",
+        "PageSize": 10,
+        "PartialViewConfig": false,
+        "PrimaryKeyName": "sch_officeid",
+        "QualifyLeadActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "5acc2295-c05d-4e63-a07d-190df1b031d5",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ReopenCaseActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "4045f1a5-bc05-483b-95a3-d0d74d311149",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ReopenOpportunityActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "e5155057-57de-4334-9b8c-18804eaff28b",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ResolveCaseActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "51215120-0c9c-478f-a9a5-54b2077461de",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "Search": {
+            "ButtonLabel": "\u003cspan class=\u0027sr-only\u0027\u003eSearch\u003c/span\u003e\u003cspan class=\u0027fa fa-search\u0027 aria-hidden=\u0027true\u0027\u003e\u003c/span\u003e",
+            "Enabled": true,
+            "NlplaceholderText": "Search list in your own words",
+            "PlaceholderText": "Search",
+            "SearchQueryStringParameterName": "query",
+            "TooltipText": "To search on partial text, use the asterisk (*) wildcard character. "
+        },
+        "SetOpportunityOnHoldActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "4c188125-b9ad-4783-90a7-bddbb12c095f",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "SortQueryStringParameterName": "sort",
+        "SubgridFormEntityId": "00000000-0000-0000-0000-000000000000",
+        "UpdatePipelinePhaseActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "8056296b-2f9b-450d-8e83-d0e253cdcbc2",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        },
+        "ViewActionLinks": [],
+        "ViewId": "de698196-670b-4933-b663-17c6a7166ce0",
+        "WinOpportunityActionLink": {
+            "Enabled": false,
+            "FilterCriteriaId": "ad119820-9668-4630-8447-02218f006107",
+            "Modal": {},
+            "ShowModal": 0,
+            "Type": 0
+        }
+    },
+    "Id": "de698196-670b-4933-b663-17c6a7166ce0",
+    "SortExpression": "",
+    "ViewName": "Office Lookup View"
+}
