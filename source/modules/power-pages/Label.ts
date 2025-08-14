@@ -1,16 +1,10 @@
-import { ExtensionData } from "./metadata/ExtensionData";
+import { LocalizedLabelMeta } from "./meta/LocalizedLabel";
+import { ExtensionData } from "./meta/ExtensionData";
 
 export interface Label {
-    LocalizedLabels: LocalizedLabel[];
-    UserLocalizedLabel?: LocalizedLabel;
+    LocalizedLabels: LocalizedLabelMeta[];
+    UserLocalizedLabel: LocalizedLabelMeta | null;
     ExtensionData: ExtensionData;
 }
 
-export interface LocalizedLabel {
-    Label: string;
-    LanguageCode: number;
-    IsManaged: boolean;
-    MetadataId: string;
-    HasChanged?: boolean;
-    ExtensionData: ExtensionData;
-}
+

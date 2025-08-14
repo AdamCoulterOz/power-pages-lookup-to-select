@@ -2,8 +2,12 @@
  * Data service for API calls and data retrieval
  */
 import { EntityConfig } from './types';
-import { Data, DVEntity, ODataResponse } from './power-pages/types';
+import { Data, DVEntity } from './power-pages/types';
 import { safeAjax } from './power-pages/types';
+
+export interface ODataResponse<T = any> {
+    value: T[];
+}
 
 /**
  * Helper function to create OData query for an entity
@@ -29,6 +33,9 @@ export function fetchEntityData<T>(entity: EntityConfig, searchTerm: string): Pr
         }
     });
 }
+
+// getData function signature
+export type GetDataFunction<T extends DVEntity> = (searchTerm: string) => Promise<Data<T>[]>;
 
 /**
  * Creates a getData function for multiple entities (polymorphic approach)

@@ -5,7 +5,9 @@
     "moduleResolution": "node",
     "lib": ["DOM", "ES2019", "ES2018", "ES2017"],
     "outDir": "./dist",
-    "rootDir": "source",
+    "rootDir": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -33,9 +35,7 @@
     "preserveConstEnums": true,
     "isolatedModules": false
   },
-  "include": [
-    "source/**/*"
-  ],
+  "include": ["**/*.ts", "*.ts"],
   "exclude": [
     "node_modules",
     "dist",

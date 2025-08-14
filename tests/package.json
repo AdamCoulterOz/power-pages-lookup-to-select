@@ -4,7 +4,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/jquery": "^3.5.32",
-    "@types/node": "^20.19.9",
+    "@types/node": "^24.2.0",
     "@types/select2": "^4.0.63",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",

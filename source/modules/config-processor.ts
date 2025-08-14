@@ -32,17 +32,17 @@ export function validateEntityConfig(entities: EntityConfig[]): void {
 /**
  * Processes and validates configuration options
  */
-export async function processConfiguration<T extends DVEntity = DVEntity>(options: LookupToSelectOptions<T>, fieldId: string): Promise<LookupToSelectOptions<T>> {
+export async function processConfiguration(fieldId: string, options?: LookupToSelectOptions): Promise<LookupToSelectOptions> {
     // Try to extract configuration from DOM first
     const extractedEntities = await extractEntityConfigFromDOM(fieldId);
     
     // Determine if we have explicit configuration or should use extracted data
-    const hasExplicitConfig = options.entitySetName || options.entities || options.data || options.getData;
+    const hasExplicitConfig = options.entities || options.format
     
     if (!hasExplicitConfig && !extractedEntities) {
         throw new Error("lookupToSelect error: No configuration provided and unable to extract configuration from DOM. Please provide entitySetName/entities or ensure the lookup modal exists in DOM.");
     }
-
+    
     // Use extracted entities if no explicit configuration is provided
     if (!hasExplicitConfig && extractedEntities) {
         options.entities = extractedEntities;
@@ -66,7 +66,7 @@ export async function processConfiguration<T extends DVEntity = DVEntity>(option
     }
 
     // Validate configuration - now everything uses entities array
-    if (!options.entities && !options.data && !options.getData) {
+    if (!options.entities && !options.format && !options.getData) {
         throw new Error("lookupToSelect error: entities configuration is required for external data source if no getData is provided");
     }
 
@@ -77,3 +77,4 @@ export async function processConfiguration<T extends DVEntity = DVEntity>(option
 
     return options;
 }
+

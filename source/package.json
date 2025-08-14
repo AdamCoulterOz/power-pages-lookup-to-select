@@ -4,18 +4,12 @@
   "description": "jQuery library to easily replace Power Pages lookup control with Select2 control",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "rebuild": "npm run clean && npm run build",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
     "prepublishOnly": "npm run rebuild"
   },
   "keywords": [
@@ -25,45 +19,21 @@
     "jquery",
     "typescript"
   ],
-  "files": [
-    "src",
-    "dist",
-    "examples"
-  ],
   "author": "Oleksandr Olashyn",
   "license": "MIT",
   "dependencies": {
+    "class-transformer": "^0.5.1",
     "pluralize": "^8.0.0",
-    "select2": "^4.1.0-rc.0"
+    "reflect-metadata": "^0.2.2",
+    "select2": "^4.0.13"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.5",
     "@types/jquery": "^3.5.32",
-    "@types/node": "^20.8.0",
     "@types/pluralize": "^0.0.33",
     "@types/select2": "^4.0.63",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "jquery": ">=3.7.1"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
-    "testMatch": [
-      "<rootDir>/tests/**/*.test.ts"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.ts",
-      "!src/**/*.d.ts",
-      "!src/index.js"
-    ],
-    "moduleNameMapping": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
   }
 }

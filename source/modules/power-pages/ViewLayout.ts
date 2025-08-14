@@ -1,4 +1,4 @@
-import { AttributeMetadata } from "./metadata/AttributeMetadata";
+import { AttributeMeta } from "./meta/Attribute";
 
 export interface ViewLayout {
     Base64SecureConfiguration: string; // Dont try to parse this, it's encrypted, but we need it to call the API to get the full configuration for a target view
@@ -20,7 +20,7 @@ export interface Column {
     Name:           string;
     Width:          number;
     SortDisabled:   boolean;
-    Metadata?:      AttributeMetadata;
+    Metadata?:      AttributeMeta;
 }
 
 export interface Configuration {
