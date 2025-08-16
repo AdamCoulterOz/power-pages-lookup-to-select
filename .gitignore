@@ -65,3 +65,5 @@ jspm_packages/
 # temporary folders
 tmp/
 temp/
+examples/
+reference/
