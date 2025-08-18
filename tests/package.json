@@ -37,8 +37,9 @@
       "!../src/index.js"
     ],
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/../src/$1",
-      "^../src/(.*)$": "<rootDir>/../src/$1"
+  "^@/(.*)$": "<rootDir>/../src/$1",
+  "^../src/(.*)$": "<rootDir>/../src/$1",
+  "^class-transformer$": "<rootDir>/../source/node_modules/class-transformer"
     },
     "modulePaths": [
       "<rootDir>/../"

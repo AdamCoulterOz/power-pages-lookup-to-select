@@ -26,7 +26,11 @@ function getAttr(attrs: Attribute[], name: string) {
 
 describe("LookupData deserialisation", () => {
   const raw = fs.readFileSync(path.resolve(__dirname, "data/LookupData.json"), "utf8");
-  const model = plainToInstance(LookupData, JSON.parse(raw), { exposeDefaultValues: false });
+  const model = plainToInstance(LookupData, JSON.parse(raw), { 
+    exposeDefaultValues: false,
+    enableImplicitConversion: true,
+    excludeExtraneousValues: false
+  });
   const rec = model.Records[0];
   const attrs = rec.Attributes;
 
