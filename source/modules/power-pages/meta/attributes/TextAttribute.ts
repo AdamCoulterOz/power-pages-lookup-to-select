@@ -3,8 +3,8 @@ import { AttributeMeta } from "../Attribute";
 import { ImeMode } from "../ImeMode";
 
 // abstract
-export interface TextMeta extends AttributeMeta {
-    AttributeTypeName: Value<'MemoType'|'StringType'>;
+export class TextMeta extends AttributeMeta {
+    override AttributeTypeName: Value<'MemoType'|'StringType'>;
     Format?: StringFormat;
     FormatName: Value<string>;
     ImeMode?: ImeMode;

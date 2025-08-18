@@ -1,9 +1,9 @@
 import { Value } from "../../Value";
 import { AttributeMeta, AttributeType } from "../Attribute";
 
-export interface IntegerMeta extends AttributeMeta {
-    AttributeType: AttributeType.Integer;
-    AttributeTypeName: Value<'IntegerType'>;
+export class IntegerMeta extends AttributeMeta {
+    override AttributeType: AttributeType.Integer;
+    override AttributeTypeName: Value<'IntegerType'>;
     Format?: IntegerFormat;
     FormulaDefinition: string;
     MaxValue?: number;

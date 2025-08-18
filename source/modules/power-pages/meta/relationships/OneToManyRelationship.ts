@@ -2,7 +2,7 @@ import { RelationshipMeta } from "../Relationship";
 import { AssociatedMenuConfiguration } from "./ManyToManyRelationship";
 
 
-export interface OneToManyRelationship extends RelationshipMeta {
+export class OneToManyRelationship extends RelationshipMeta {
     AssociatedMenuConfiguration: AssociatedMenuConfiguration;
     CascadeConfiguration: CascadeConfiguration;
     ReferencedAttribute: string;
@@ -32,7 +32,7 @@ export enum CascadeConfiguration
     RollupView
 }
 
-export interface RelationshipAttribute {
+export class RelationshipAttribute {
     ReferencingAttributeName: string;
     ReferencedAttributeName: string;
 }

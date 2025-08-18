@@ -4,12 +4,12 @@ import { AttributeMeta } from "./Attribute";
 import { EntityKeyMeta } from "./EntityKey";
 import { DataMap as DataMap } from "./DataMap";
 import { ExtensionData } from "./ExtensionData";
-import { IExtensibleDataObject } from "./IExtensibleDataObject";
+import { ExtensibleDataObject } from "./ExtensibleDataObject";
 import { ManyToManyRelationship } from "./relationships/ManyToManyRelationship";
 import { OneToManyRelationship } from "./relationships/OneToManyRelationship";
 import { DataList } from "./DataList";
 
-export interface EntityMeta {
+export class EntityMeta {
     ActivityTypeMask?: number | null;
     Attributes: AttributeMeta[];
     AutoRouteToOwnerQueue?: boolean | null;
@@ -144,7 +144,7 @@ export enum OwnershipTypes {
 }
 
 
-export interface SecurityPrivilegeMeta
+export class SecurityPrivilegeMeta
 {
     CanBeBasic: boolean;
     CanBeDeep: boolean;
@@ -172,7 +172,7 @@ export enum PrivilegeType
     AppendTo
 }
 
-export interface EntitySetting {
+export class EntitySetting {
     Name: string;
     Value: Entity;
     ChildSettings: EntitySetting[];
@@ -180,7 +180,7 @@ export interface EntitySetting {
 
 }
 
-export interface Entity {
+export class Entity {
   [AttributeName: string]: any;
 
   LogicalName: string;
@@ -199,21 +199,20 @@ export interface Entity {
   ExtensionData: ExtensionData;
 }
 
-export interface AttributeCollection extends DataMap<string, any> {}
-export interface FormattedValueCollection extends DataMap<string, string> {}
-export interface RelatedEntityCollection extends DataMap<Relationship, EntityCollection> {}
-export interface KeyAttributeCollection extends DataMap<string, any> {}
+export class AttributeCollection extends DataMap<string, any> {}
+export class FormattedValueCollection extends DataMap<string, string> {}
+export class RelatedEntityCollection extends DataMap<Relationship, EntityCollection> {}
+export class KeyAttributeCollection extends DataMap<string, any> {}
 
 export enum EntityState
 {
     Unchanged, Created, Changed
 }
 
-export interface Relationship  extends IExtensibleDataObject {
+export class Relationship  extends ExtensibleDataObject {
 
     SchemaName: string;
     PrimaryEntityRole?: EntityRole;
-    ExtensionData: ExtensionData;
 }
 
 export enum EntityRole {
@@ -221,7 +220,7 @@ export enum EntityRole {
     Referenced
 }
 
-export interface EntityCollection extends IExtensibleDataObject {
+export class EntityCollection extends ExtensibleDataObject {
     [index: number]: Entity;
     Entities: DataList<Entity>;
     MoreRecords: boolean;
@@ -230,7 +229,6 @@ export interface EntityCollection extends IExtensibleDataObject {
     TotalRecordCount: number;
     TotalRecordCountLimitExceeded: boolean;
     EntityName: string;
-    ExtensionData: ExtensionData;
 }
 
 class Lazy<T> {

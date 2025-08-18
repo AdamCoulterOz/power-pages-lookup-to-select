@@ -20,6 +20,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noUnusedLocals": false,
+    "strictPropertyInitialization": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,

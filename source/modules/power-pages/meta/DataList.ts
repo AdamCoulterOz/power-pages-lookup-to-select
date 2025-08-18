@@ -1,2 +1,2 @@
 
-export interface DataList<T> extends Array<T> { }
+export class DataList<T> extends Array<T> { }

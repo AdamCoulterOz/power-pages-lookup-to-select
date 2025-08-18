@@ -3,7 +3,7 @@ import { AttributeType } from "../Attribute";
 import { LookupBaseMeta } from "./LookupBase";
 
 
-export interface LookupMeta extends LookupBaseMeta {
-    AttributeType: AttributeType.Lookup;
-    AttributeTypeName: Value<'LookupType'>;
+export class LookupMeta extends LookupBaseMeta {
+    override AttributeType: AttributeType.Lookup;
+    override AttributeTypeName: Value<'LookupType'>;
 }

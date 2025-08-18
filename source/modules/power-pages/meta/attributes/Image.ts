@@ -1,9 +1,9 @@
 import { Value } from "../../Value";
 import { AttributeMeta, AttributeType } from "../Attribute";
 
-export interface ImageMeta extends AttributeMeta {
-    AttributeType: AttributeType.Virtual;
-    AttributeTypeName: Value<'ImageType'>;
+export class ImageMeta extends AttributeMeta {
+    override AttributeType: AttributeType.Virtual;
+    override AttributeTypeName: Value<'ImageType'>;
     CanStoreFullImage?: boolean;
     IsPrimaryImage?: boolean;
     MaxHeight?: number;

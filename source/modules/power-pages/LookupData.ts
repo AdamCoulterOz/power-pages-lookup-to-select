@@ -1,29 +1,72 @@
-import { AttributeMeta } from "./meta/Attribute";
-import { DateTimeFormat } from "./meta/attributes/DateTime";
-import { Value } from "./Value";
+import { Type, TypeOptions } from "class-transformer";
+import {
+  Attribute,
+  BooleanAttribute,
+  ByteArrayAttribute,
+  DateTimeAttribute,
+  DecimalAttribute,
+  DoubleAttribute,
+  EntityReferenceAttribute,
+  GuidAttributeType,
+  Int32Attribute,
+  MoneyAttribute,
+  OptionSetAttribute,
+  OptionSetCollectionAttribute,
+  StringAttribute,
+} from "./Attribute";
 
-export interface LookupData {
+export class CreateActionMetadata {
+  Disabled: boolean;
+  DisabledMessage: null;
+}
+
+export class LookupData {
   MoreRecords: boolean;
+  @Type(() => EntityRecord)
   Records: EntityRecord[];
   ItemCount: number;
   PageCount: number;
   PageNumber: number;
   PageSize: number;
   NextPagePagingCookie?: string;
-  ViewConfiguration: null;
-  CompleteViewLayout: null;
+  ViewConfiguration!: null;
+  CompleteViewLayout!: null;
+  @Type(() => CreateActionMetadata)
   CreateActionMetadata: CreateActionMetadata;
-  DisabledItemActionLinks: any[];
+  // DisabledItemActionLinks: any[];
 }
 
-export interface CreateActionMetadata {
-  Disabled: boolean;
-  DisabledMessage: null;
-}
+export const AttributeDiscriminator: TypeOptions = {
+  discriminator: {
+    property: "Type",
+    subTypes: [
+      { name: "System.String", value: StringAttribute },
+      { name: "System.Int32", value: Int32Attribute },
+      { name: "System.Decimal", value: DecimalAttribute },
+      { name: "System.Double", value: DoubleAttribute },
+      { name: "System.Boolean", value: BooleanAttribute },
+      { name: "System.Guid", value: GuidAttributeType },
+      { name: "System.Byte[]", value: ByteArrayAttribute },
+      { name: "System.DateTime", value: DateTimeAttribute },
+      {
+        name: "Microsoft.Xrm.Sdk.EntityReference",
+        value: EntityReferenceAttribute,
+      },
+      { name: "Microsoft.Xrm.Sdk.OptionSetValue", value: OptionSetAttribute },
+      {
+        name: "Microsoft.Xrm.Sdk.OptionSetValueCollection",
+        value: OptionSetCollectionAttribute,
+      },
+      { name: "Microsoft.Xrm.Sdk.Money", value: MoneyAttribute },
+    ],
+  },
+};
 
-export interface EntityRecord {
+export class EntityRecord {
   Id: string;
   EntityName: string;
+
+  @Type(() => Attribute, AttributeDiscriminator)
   Attributes: Attribute[];
   CanRead: boolean;
   CanWrite: boolean;
@@ -33,65 +76,3 @@ export interface EntityRecord {
   StateCode: number;
   StatusCode: number;
 }
-
-export enum Type {
-  BigInt = "System.Int64",
-  Boolean = "System.Boolean",
-  Customer = "Microsoft.Xrm.Sdk.EntityReference", //??
-  DateTime = "System.DateTime",
-  Decimal = "System.Decimal",
-  Double = "System.Double",
-  EntityName = "Microsoft.Xrm.Sdk.EntityReference", //??
-  File = "Microsoft.Xrm.Sdk.File", //??
-  Image = "Microsoft.Xrm.Sdk.Image", //??
-  Integer = "System.Int32",
-  Lookup = "Microsoft.Xrm.Sdk.EntityReference", //??
-  ManagedProperty = "Microsoft.Xrm.Sdk.ManagedProperty", //??
-  Memo = "Microsoft.Xrm.Sdk.Memo", //??
-  Money = "Microsoft.Xrm.Sdk.Money", //??
-  MultiSelectPicklist = "Microsoft.Xrm.Sdk.MultiSelectPicklist", //??
-  Owner = "Microsoft.Xrm.Sdk.EntityReference", //??
-  PickList = "Microsoft.Xrm.Sdk.PickList", //??
-  State = "Microsoft.Xrm.Sdk.OptionSetValue",
-  Status = "Microsoft.Xrm.Sdk.OptionSetValue",
-  String = "System.String",
-  OptionSet = "Microsoft.Xrm.Sdk.OptionSetValue",
-  BooleanOptionSet = "Microsoft.Xrm.Sdk.BooleanOptionSet",
-  UniqueIdentifier = "System.Guid",
-}
-
-export type ValueByType = {
-  [Type.String]: string;
-  [Type.Integer]: number;
-  [Type.Decimal]: number;
-  [Type.Double]: number;
-  [Type.Boolean]: boolean;
-  [Type.DateTime]: string;
-  [Type.UniqueIdentifier]: string;
-  [Type.BigInt]: number;
-
-  [Type.Customer]: Value<string>;
-  [Type.File]: Value<File>;
-  // [Type.Image]: Value<>;
-  // [Type.Lookup]: Value<Lookup>;
-  // [Type.ManagedProperty]: Value<ManagedProperty>;
-  [Type.Memo]: Value<string>;
-  [Type.Money]: Value<number>;
-  // [Type.MultiSelectPicklist]: Value<MultiSelectPicklist>;
-  // [Type.Owner]: Value<Owner>;
-  // [Type.PickList]: Value<PickList>;
-  // [Type.State]: Value<string>;
-  // [Type.Status]: Value<string>;
-  [Type.OptionSet]: Value<number>;
-};
-
-export interface Attribute<T extends Type, K extends keyof ValueByType = keyof ValueByType> {
-  Name: string;
-  Type: K;
-  Value: T;
-  FormattedValue?: string;
-  DisplayValue?: string;
-  AttributeMetadata?: AttributeMeta;
-}
-
-

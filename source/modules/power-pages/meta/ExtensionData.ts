@@ -1,1 +1,1 @@
-export interface ExtensionData { }
+export class ExtensionData { }

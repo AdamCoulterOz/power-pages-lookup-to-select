@@ -4,12 +4,16 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/jquery": "^3.5.32",
-    "@types/node": "^24.2.0",
+    "@types/node": "^24.3.0",
     "@types/select2": "^4.0.63",
+    "class-transformer": "^0.5.1",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "reflect-metadata": "^0.2.2",
     "ts-jest": "^29.4.0",
-    "typescript": "^5.8.3"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "test": "jest",
@@ -21,7 +25,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/setup.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup.ts"
+    ],
     "testMatch": [
       "<rootDir>/**/*.test.ts"
     ],
@@ -34,7 +40,9 @@
       "^@/(.*)$": "<rootDir>/../src/$1",
       "^../src/(.*)$": "<rootDir>/../src/$1"
     },
-    "modulePaths": ["<rootDir>/../"],
+    "modulePaths": [
+      "<rootDir>/../"
+    ],
     "testTimeout": 10000,
     "verbose": true,
     "displayName": "Power Pages Lookup to Select Tests"

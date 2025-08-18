@@ -2,10 +2,11 @@ import { Value } from "../../Value";
 import { AttributeMeta, AttributeType } from "../Attribute";
 import { BooleanOptionSetMeta } from "../option-sets/BooleanOptionSet";
 
-export interface BooleanMeta extends AttributeMeta
+
+export class BooleanMeta extends AttributeMeta
 {
-    AttributeType: AttributeType.Boolean;
-    AttributeTypeName: Value<'BooleanType'>;
+    override AttributeType: AttributeType.Boolean;
+    override AttributeTypeName: Value<'BooleanType'>;
     DefaultValue?: boolean;
     FormulaDefinition: string;
     SourceTypeMask?: number;

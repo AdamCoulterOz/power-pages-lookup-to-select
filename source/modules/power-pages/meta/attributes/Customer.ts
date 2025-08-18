@@ -2,9 +2,8 @@ import { Value } from "../../Value";
 import { AttributeType } from "../Attribute";
 import { LookupBaseMeta } from "./LookupBase";
 
-
-export interface CustomerMeta extends LookupBaseMeta {
-    AttributeType: AttributeType.Customer;
-    AttributeTypeName: Value<'CustomerType'>;
-    Targets: ['account', 'contact'];
+export class CustomerMeta extends LookupBaseMeta {
+    override AttributeType: AttributeType.Customer;
+    override AttributeTypeName: Value<'CustomerType'>;
+    override Targets: ['account', 'contact'];
 }

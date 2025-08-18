@@ -1,6 +1,6 @@
 import { ExtensionData } from "./ExtensionData";
 
 
-export interface IExtensibleDataObject {
+export class ExtensibleDataObject {
   ExtensionData?: ExtensionData | null;
 }

@@ -1,8 +1,8 @@
 import { Value } from "../../Value";
 import { AttributeMeta, AttributeType } from "../Attribute";
 
-export interface FileMeta extends AttributeMeta {
-    AttributeType: AttributeType.Virtual;
-    AttributeTypeName: Value<'FileType'>;
+export class FileMeta extends AttributeMeta {
+    override AttributeType: AttributeType.Virtual;
+    override AttributeTypeName: Value<'FileType'>;
     MaxSizeInKB?: number;
 }

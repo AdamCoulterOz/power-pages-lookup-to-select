@@ -1,7 +1,7 @@
 import { Meta } from "../Meta";
 import { BooleanManagedProperty } from "../Value";
 
-export interface RelationshipMeta extends Meta
+export class RelationshipMeta extends Meta
 {
     IsCustomRelationship?: boolean;
     IsCustomizable: BooleanManagedProperty;

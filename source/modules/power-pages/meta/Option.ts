@@ -1,7 +1,7 @@
 import { Label } from "../Label";
 import { Meta } from "../Meta";
 
-export interface OptionMeta extends Meta {
+export class OptionMeta extends Meta {
     Color: string | null;
     Description: Label;
     ExternalValue: string | null;

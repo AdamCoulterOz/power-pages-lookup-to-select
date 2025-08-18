@@ -2,7 +2,7 @@ import { Label } from "../Label";
 import { Meta } from "../Meta";
 import { BooleanManagedProperty } from "../Value";
 
-export interface OptionSetBaseMeta extends Meta {
+export class OptionSetBaseMeta extends Meta {
     Description: Label;
     DisplayName: Label;
     ExternalTypeName: string;

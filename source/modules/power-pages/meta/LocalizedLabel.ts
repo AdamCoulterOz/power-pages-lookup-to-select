@@ -1,7 +1,7 @@
 import { Meta } from "../Meta";
 
 
-export interface LocalizedLabelMeta extends Meta {
+export class LocalizedLabelMeta extends Meta {
     Label: string;
     LanguageCode: number;
     IsManaged?: boolean;

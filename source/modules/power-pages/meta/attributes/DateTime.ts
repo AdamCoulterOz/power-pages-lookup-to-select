@@ -2,9 +2,9 @@ import { AttributeMeta, AttributeType } from "../Attribute";
 import { BooleanManagedProperty, Value } from "../../Value";
 import { ImeMode } from "../ImeMode";
 
-export interface DateTimeMeta extends AttributeMeta {
-    AttributeType: AttributeType.DateTime;
-    AttributeTypeName: Value<'DateTimeType'>;
+export class DateTimeMeta extends AttributeMeta {
+    override AttributeType: AttributeType.DateTime;
+    override AttributeTypeName: Value<'DateTimeType'>;
     CanChangeDateTimeBehavior: BooleanManagedProperty;
     DateTimeBehavior: Value<DateTimeBehavior>;
     Format?: DateTimeFormat;

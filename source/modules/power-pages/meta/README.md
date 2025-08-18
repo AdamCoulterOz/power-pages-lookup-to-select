@@ -122,7 +122,7 @@ try {
 The system uses `AttributeType` enum instead of strings for maximum type safety in downstream processing:
 
 ```typescript
-export interface ProcessedAttribute {
+export class ProcessedAttribute {
     name: string;
     type: AttributeType; // Enum instead of string for stronger typing
     value: any;

@@ -3,7 +3,7 @@ import { AttributeType } from "../Attribute";
 import { EnumMeta } from "./Enum";
 
 
-export interface StatusMeta extends EnumMeta {
-    AttributeType: AttributeType.Status;
-    AttributeTypeName: Value<'StatusType'>;
+export class StatusMeta extends EnumMeta {
+    override AttributeType: AttributeType.Status;
+    override AttributeTypeName: Value<'StatusType'>;
 }

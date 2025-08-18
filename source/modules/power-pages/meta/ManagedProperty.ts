@@ -1,7 +1,7 @@
 import { Label } from "../Label";
 import { Meta } from "../Meta";
 
-export interface ManagedPropertyMeta extends Meta {
+export class ManagedPropertyMeta extends Meta {
     logicalName: string;
     displayName: Label;
     managedPropertyType: ManagedPropertyType | null;

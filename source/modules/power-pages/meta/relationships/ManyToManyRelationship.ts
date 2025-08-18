@@ -2,7 +2,7 @@ import { Label } from "../../Label";
 import { ExtensionData } from "../ExtensionData";
 import { RelationshipMeta } from "../Relationship";
 
-export interface ManyToManyRelationship extends RelationshipMeta
+export class ManyToManyRelationship extends RelationshipMeta
 {
     Entity1AssociatedMenuConfiguration: AssociatedMenuConfiguration;
     Entity2AssociatedMenuConfiguration: AssociatedMenuConfiguration;
@@ -15,7 +15,7 @@ export interface ManyToManyRelationship extends RelationshipMeta
     Entity2NavigationPropertyName: string;
 }
 
-export interface AssociatedMenuConfiguration {
+export class AssociatedMenuConfiguration {
     Behavior?: AssociatedMenuBehavior | null;
     Group?: AssociatedMenuGroup | null;
     Label: Label;

@@ -1,9 +1,9 @@
 import { Value } from "../../Value";
 import { AttributeMeta, AttributeType } from "../Attribute";
 
-export interface BigIntMeta extends AttributeMeta {
-    AttributeType: AttributeType.BigInt;
-    AttributeTypeName: Value<'BigIntType'>;
+export class BigIntMeta extends AttributeMeta {
+    override AttributeType: AttributeType.BigInt;
+    override AttributeTypeName: Value<'BigIntType'>;
     MaxValue?: number;
     MinValue?: number;
 }
