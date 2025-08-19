@@ -1,4 +1,4 @@
-import { Type, TypeOptions } from "class-transformer";
+import { Transform, Type, TypeOptions } from "class-transformer";
 import {
   Attribute,
   BooleanAttribute,
@@ -14,6 +14,7 @@ import {
   OptionSetCollectionAttribute,
   StringAttribute,
 } from "./Attribute";
+import { CompleteViewLayout } from "./ViewLayout";
 
 export class CreateActionMetadata {
   Disabled: boolean;
@@ -28,12 +29,13 @@ export class LookupData {
   PageCount: number;
   PageNumber: number;
   PageSize: number;
-  NextPagePagingCookie?: string;
-  ViewConfiguration!: null;
-  CompleteViewLayout!: null;
+  NextPagePagingCookie?: string | null;
+  ViewConfiguration: null;
+  @Transform(({ value }) => JSON.parse(value), { toClassOnly: true })
+  @Type(() => CompleteViewLayout)
+  CompleteViewLayout: CompleteViewLayout;
   @Type(() => CreateActionMetadata)
   CreateActionMetadata: CreateActionMetadata;
-  // DisabledItemActionLinks: any[];
 }
 
 export const AttributeDiscriminator: TypeOptions = {

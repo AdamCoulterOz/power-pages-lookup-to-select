@@ -1,20 +1,19 @@
-import "reflect-metadata";
-import { Expose, Type, Transform, plainToInstance } from "class-transformer";
+import { Type } from "class-transformer";
 
 import { AttributeMeta } from "./meta/Attribute";
 
 export class ViewLayout {
+  @Type(() => Configuration)
+  Configuration: Configuration;
   Base64SecureConfiguration: string; // Dont try to parse this, it's encrypted, but we need it to call the API to get the full configuration for a target view
   ViewName: string;
+  ColumnsTotalWidth: number;
   Id: string;
 }
 
 export class CompleteViewLayout extends ViewLayout {
-  @Type(() => Configuration)
-  Configuration: Configuration;
   @Type(() => Column)
   Columns: Column[];
-  ColumnsTotalWidth: number;
   SortExpression: string;
 }
 
