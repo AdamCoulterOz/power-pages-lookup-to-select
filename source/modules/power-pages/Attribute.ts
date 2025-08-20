@@ -1,7 +1,11 @@
-import { Type, Transform, TypeOptions } from "class-transformer";
+import { Type, Transform, plainToInstance } from "class-transformer";
+import { transformUsingDiscriminator } from "./transformers";
 import { AttributeMeta } from "./meta/Attribute";
 import { Money, MoneyMeta } from "./meta/attributes/Money";
-import { MultiSelectPickListMeta, OptionSetValueCollection } from "./meta/attributes/MultiSelectPickList";
+import {
+  MultiSelectPickListMeta,
+  OptionSetValueCollection,
+} from "./meta/attributes/MultiSelectPickList";
 import { EntityReference } from "./meta/attributes/LookupBase";
 import { OptionSetValue } from "./meta/attributes/Enum";
 import { BigIntMeta } from "./meta/attributes/BigInt";
@@ -53,9 +57,8 @@ export const AttributeMetaDiscriminator = {
   },
 };
 
-export function flattenMetaDiscriminator<T extends Record<string, any>>(
-  o: T
-): T {
+export function flattenMetaDiscriminator
+  <T extends Record<string, any>>(o: T): T {
   if (o && o.AttributeTypeName && typeof o.AttributeTypeName === "object") {
     (o as any).AttributeTypeNameValue = o.AttributeTypeName.Value;
   }
@@ -67,10 +70,14 @@ export class Attribute {
   FormattedValue?: string;
   DisplayValue?: string;
 
-  @Transform(({ value }) => flattenMetaDiscriminator(value), {
-    toClassOnly: true,
-  })
-  @Type(() => AttributeMeta, AttributeMetaDiscriminator)
+  @Transform(
+    transformUsingDiscriminator(
+      AttributeMeta as any,
+      (AttributeMetaDiscriminator as any).discriminator,
+      flattenMetaDiscriminator
+    ),
+    { toClassOnly: true }
+  )
   AttributeMetadata?: AttributeMeta;
 }
 
@@ -142,4 +149,3 @@ export class ByteArrayAttribute extends Attribute {
 export class DecimalAttribute extends Attribute {
   Value: number;
 }
-

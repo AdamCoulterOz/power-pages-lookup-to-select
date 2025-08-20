@@ -26,13 +26,13 @@ export default class LookupSearch {
         if (this.initialised)
             this.reset();
 
-        try {
+        // try {
             await this.setup();
-        } catch (error) {
-            this.reset();
-            const msg = error instanceof Error ? error.message : String(error);
-            throw new L2SError(`Setup failed: ${msg}`, error as Error | undefined);
-        }
+        // } catch (error) {
+        //     this.reset();
+        //     const msg = error instanceof Error ? error.message : String(error);
+        //     throw new L2SError(`Setup failed: ${msg}`, error as Error | undefined);
+        // }
         this.initialised = true;
     }
 

@@ -212,8 +212,11 @@ export default class PowerPagesClient {
     const entityName = PowerPagesClient.getEntityFormViewEntityName();
 
     for (const layoutRef of viewLayoutReferences) {
-
-      if (embedded && layoutRef.Base64SecureConfiguration === embedded.Base64SecureConfiguration)
+      if (
+        embedded &&
+        layoutRef.Base64SecureConfiguration ===
+          embedded.Base64SecureConfiguration
+      )
         continue;
 
       const request = {

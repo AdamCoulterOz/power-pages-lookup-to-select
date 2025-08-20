@@ -1,4 +1,4 @@
-import { Transform, Type, TypeOptions } from "class-transformer";
+import { plainToInstance, Transform, Type, TypeOptions } from "class-transformer";
 import {
   Attribute,
   BooleanAttribute,
@@ -31,8 +31,13 @@ export class LookupData {
   PageSize: number;
   NextPagePagingCookie?: string | null;
   ViewConfiguration: null;
-  @Transform(({ value }) => JSON.parse(value), { toClassOnly: true })
-  @Type(() => CompleteViewLayout)
+  @Transform(({ value }) => {
+    const v = typeof value === "string" ? JSON.parse(value) : value;
+    return plainToInstance(CompleteViewLayout, v, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: false,
+    });
+  }, { toClassOnly: true })
   CompleteViewLayout: CompleteViewLayout;
   @Type(() => CreateActionMetadata)
   CreateActionMetadata: CreateActionMetadata;
@@ -67,7 +72,6 @@ export const AttributeDiscriminator: TypeOptions = {
 export class EntityRecord {
   Id: string;
   EntityName: string;
-
   @Type(() => Attribute, AttributeDiscriminator)
   Attributes: Attribute[];
   CanRead: boolean;

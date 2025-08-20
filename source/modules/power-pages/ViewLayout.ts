@@ -1,6 +1,7 @@
-import { Type } from "class-transformer";
-
+import { Transform, Type, plainToInstance } from "class-transformer";
 import { AttributeMeta } from "./meta/Attribute";
+import { AttributeMetaDiscriminator, flattenMetaDiscriminator } from "./Attribute";
+import { transformUsingDiscriminator } from "./transformers";
 
 export class ViewLayout {
   @Type(() => Configuration)
@@ -24,8 +25,14 @@ export class Column {
   Name: string;
   Width: number;
   SortDisabled: boolean;
-
-  @Type(() => AttributeMeta)
+  @Transform(
+    transformUsingDiscriminator(
+      AttributeMeta as any,
+      (AttributeMetaDiscriminator as any).discriminator,
+      flattenMetaDiscriminator
+    ),
+    { toClassOnly: true }
+  )
   Metadata?: AttributeMeta;
 }
 
@@ -47,36 +54,8 @@ export class Configuration {
   SortQueryStringParameterName: string;
   PageQueryStringParameterName: string;
   FilterByUserOptionLabel: string;
-  // DetailsActionLink: DetailsActionLink;
-  // InsertActionLink: ActionLink;
-  // AssociateActionLink: ActionLink;
-  // EditActionLink: ActionLink;
-  // DeleteActionLink: ActionLink;
-  // CloseIncidentActionLink: ActionLink;
-  // ResolveCaseActionLink: ActionLink;
-  // ReopenCaseActionLink: ActionLink;
-  // CancelCaseActionLink: ActionLink;
-  // QualifyLeadActionLink: ActionLink;
-  // ConvertOrderToInvoiceActionLink: ActionLink;
-  // ConvertQuoteToOrderActionLink: ActionLink;
-  // CalculateOpportunityActionLink: ActionLink;
-  // DeactivateActionLink: ActionLink;
-  // ActivateActionLink: ActionLink;
-  // ActivateQuoteActionLink: ActionLink;
-  // SetOpportunityOnHoldActionLink: ActionLink;
-  // ReopenOpportunityActionLink: ActionLink;
-  // WinOpportunityActionLink: ActionLink;
-  // LoseOpportunityActionLink: ActionLink;
-  // GenerateQuoteFromOpportunityActionLink: ActionLink;
-  // UpdatePipelinePhaseActionLink: ActionLink;
-  // DisassociateActionLink: ActionLink;
-  // CreateRelatedRecordActionLinks: ViewActionLink[];
-  // ViewActionLinks: ActionLink[];
-  // ItemActionLinks: ActionLink[];
   ActionLinksColumnWidth: number;
   LanguageCode: number;
-  // MapSettings: MapSettings;
-  // CalendarSettings: CalendarSettings;
   @Type(() => FilterSettings)
   FilterSettings: FilterSettings;
   ModalLookupAttributeLogicalName: string;
