@@ -1,0 +1,85 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Jest Tests",
+      "program": "${workspaceFolder}/tests/node_modules/jest/bin/jest.js",
+      "args": [
+        "--runInBand", // run tests serially, easier for debugging
+        "--detectOpenHandles"
+      ],
+      "cwd": "${workspaceFolder}/tests",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Launch Edge (9222)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "https://internal.scch.org.au/safety/incidents/new/",
+      "userDataDir": true,
+      "runtimeExecutable": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+      "runtimeArgs": ["--remote-debugging-port=9222"],
+      "skipFiles": [
+        "**/app.js",
+        "pptr:evaluate*",
+        "**/eval/*",
+        "<node_internals>/**",
+        "${workspaceFolder}/**/node_modules/**",
+        "**/*.min.js",
+        // "**/content.powerapps.com/**",
+        // "**/res-*/**",
+        // "**/powerappsportal/**",
+        "**/*.bundle-*.js",
+        "**/*.bundle.*.js",
+        // "**/controls/host/**"
+        // "**/*.chunk.js"
+        // "https://content.powerapps.com/**",
+        // "http(s)://content.powerapps.com/**"
+      ],
+      "smartStep": true,
+      "webRoot": "${workspaceFolder}/source",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "*": "${webRoot}/*",
+        "./*": "${webRoot}/*",
+        "/*": "${webRoot}/*",
+        "../*": "${webRoot}/*",
+        "file:///*": "${webRoot}/*",
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///*": "${webRoot}/*",
+        "https://internal.scch.org.au/*": "${webRoot}/*"
+      }
+      // "resolveSourceMapLocations": [
+      //   "${webRoot}/**",
+      //   "!**/node_modules/**"
+      // ]
+    },
+    {
+      // 2) Run the CDP injector (Node). Use ts-node or run compiled JS.
+      "name": "CDP Injector (dev-injector.ts)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/source",
+      "program": "${workspaceFolder}/source/dist/dev-injector.js",
+      "runtimeExecutable": "node",
+      "preLaunchTask": "build:source",
+      // If you compile first, replace program with ./dist/dev-injector.js and remove runtimeArgs.
+      "env": { "DEBUG": "cdp:injector*" },
+      "console": "integratedTerminal",
+      "restart": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Edge + Injector (auto)",
+      "configurations": [
+        "Launch Edge (9222)",
+        "CDP Injector (dev-injector.ts)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
