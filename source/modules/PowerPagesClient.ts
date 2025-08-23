@@ -8,10 +8,10 @@ import { plainToInstance } from "class-transformer";
 interface ODataResponse<T = any> {
   value: T[];
 }
-interface PowerPagesShell {
+export interface PowerPagesShell {
   getTokenDeferred(): JQuery.Deferred<string>;
 }
-interface ValidateLoginSessionFunction<T> {
+export interface ValidateLoginSession<T = any> {
   (
     data: T,
     textStatus: JQuery.Ajax.TextStatus,
@@ -50,23 +50,21 @@ export default class PowerPagesClient {
     };
   }
 
-  private static fetchEntityData<T = any>(
+  private static async fetchEntityData<T = any>(
     entity: EntityConfig,
-    searchTerm: string
+    searchTerm: string,
+    pageSize = 50
   ): Promise<ODataResponse<T>> {
     const queryOptions = PowerPagesClient.createODataQuery(entity, searchTerm);
-
-    return PowerPagesClient.apiRequest<ODataResponse<T>>({
+    const results = await PowerPagesClient.apiRequest<ODataResponse<T>>({
       type: "GET",
       url: `/_api/${entity.SetName}?${queryOptions}`,
       headers: {
-        Prefer: "odata.include-annotations=*",
+        Accept: "application/json",
+        Prefer: `odata.include-annotations=*,odata.maxpagesize=${pageSize}`,
       },
     });
-  }
-
-  private static escOData(s: string) {
-    return s.replace(/'/g, "''");
+    return results;
   }
 
   private static createODataQuery(
@@ -75,29 +73,16 @@ export default class PowerPagesClient {
   ): string {
     const select = `$select=${entity.IdField},${entity.TextField}&$orderby=${entity.TextField} asc`;
     if (!searchTerm) return select;
-    const p = PowerPagesClient.escOData(searchTerm);
-    return `${select}&$filter=startswith(${entity.TextField},'${p}')`;
-    // Optionally: tolower(field) & param aliases if supported
+
+    // Parameter alias avoids quoting/encoding pitfalls
+    const p1 = encodeURIComponent(searchTerm);
+    return `${select}&$filter=contains(${
+      entity.TextField
+    },@p1)&@p1='${p1.replace(/'/g, "''")}'`;
   }
 
   private static async apiRequest<T>(options: JQuery.AjaxSettings): Promise<T> {
-    // Resolve portal globals lazily at call time (they may be defined after our bundle loads)
-    const shell: PowerPagesShell | undefined = (window as any).shell;
-    const validateLoginSession: ValidateLoginSessionFunction<T> | undefined = (
-      window as any
-    ).validateLoginSession as any;
-
-    if (!shell || typeof shell.getTokenDeferred !== "function") {
-      throw new Error(
-        "Power Pages shell is not available (shell.getTokenDeferred)."
-      );
-    }
-    if (!validateLoginSession || typeof validateLoginSession !== "function") {
-      throw new Error("Power Pages validateLoginSession is not available.");
-    }
-
-    const token = await shell.getTokenDeferred();
-
+    const token = await window.shell!.getTokenDeferred();
     options.headers = {
       ...options.headers,
       __RequestVerificationToken: token,
@@ -106,13 +91,11 @@ export default class PowerPagesClient {
     return new Promise<T>((resolve, reject) => {
       $.ajax(options)
         .done((data, textStatus, jqXHR) => {
-          validateLoginSession(data, textStatus, jqXHR, resolve);
+          window.validateLoginSession!(data, textStatus, jqXHR, resolve);
         })
         .fail(reject);
     });
   }
-
-  // Note: shell and validateLoginSession are resolved lazily in apiRequest to avoid early undefined captures.
 
   public static async GetFieldTargets(
     fieldId: string
@@ -165,12 +148,24 @@ export default class PowerPagesClient {
         const entitySetName = pluralize(entityName);
         // use of pluralize because for some reason I can't find the plural name in any of the metadata that power pages gives me, ill change this if i find it later.
 
+        const toTitleCase = (str: string): string => {
+          return str.replace(
+            /\w\S*/g,
+            (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
+          );
+        };
+        const GetDisplayNameFromSetName = (setName: string) => {
+          const parts = setName.split("_");
+
+          return toTitleCase(parts[parts.length - 1]);
+        };
+
         return {
           SetName: entitySetName,
           IdField: primaryKeyName,
           TextField: textFieldName,
           LogicalName: entityName,
-          DisplayName: layout.ViewName,
+          DisplayName: GetDisplayNameFromSetName(entitySetName),
         } as EntityConfig;
       })
       .filter((entity): entity is EntityConfig => entity !== null); // Remove any null entities

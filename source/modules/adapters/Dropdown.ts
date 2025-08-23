@@ -3,14 +3,14 @@ import { Result } from "../Options";
 
 export interface DropdownAdapter {
   Enhance<T>(
-    host: HTMLElement,
+    selectId: string,
+    adjacentLocation: HTMLElement,
     config: Config,
     dataRetriever: (term: string) => Promise<T[]>,
-    dataProcessor: (data: T[]) => Result
-  ): DropdownHandle;
-}
-
-export interface DropdownHandle {
+    dataProcessor: (data: T[]) => Result,
+    multiple?: boolean
+  ): void;
+  
   OnChange(cb: (value: DropdownValue | null) => void): () => void;
   GetValue(): DropdownValue | null;
   GetValues(): DropdownValue[];

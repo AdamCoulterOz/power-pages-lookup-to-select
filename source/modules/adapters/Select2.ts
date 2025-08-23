@@ -1,87 +1,102 @@
-// Types only; runtime plugin is expected to be provided by the host page
-import type * as s2 from "select2";
+import type * as s2 from "select2"; // Types only; runtime plugin is expected to be provided by the host page
 import * as c from "../Config";
 import * as ic from "../Options";
-import { DropdownAdapter, DropdownHandle, DropdownValue } from "./Dropdown";
+import { DropdownAdapter, DropdownValue } from "./Dropdown";
 
 export class Select2DropdownAdapter implements DropdownAdapter {
+  private searchDropdown: HTMLSelectElement | null = null;
+  private s2: JQuery | null = null;
+  private subscribers = new Set<(v: DropdownValue | null) => void>();
+  private jQuery: JQueryStatic = window.$!;
+
   public Enhance<T>(
-    host: HTMLElement,
+    selectId: string,
+    adjacentLocation: HTMLElement,
     config: c.Config,
     dataRetriever: (term: string) => Promise<T[]>,
-    dataProcessor: (data: T[]) => ic.Result
-  ): DropdownHandle {
-    const $jq: any = (window as any).jQuery || (window as any).$;
-    if (!$jq) throw new Error("jQuery is not available on window.");
-    const $element = $jq(host);
-    const options = Select2DropdownAdapter.MapOptions(
+    dataProcessor: (data: T[]) => ic.Result,
+    multiple?: boolean
+  ) {
+    // Create new dropdown element
+    this.searchDropdown = document.createElement("select");
+    this.searchDropdown.classList.add("form-select");
+    this.searchDropdown.id = selectId;
+    if (multiple) this.searchDropdown.multiple = true;
+    adjacentLocation.insertAdjacentElement("afterend", this.searchDropdown);
+
+    if (!this.jQuery) throw new Error("jQuery is not available on window.");
+    this.s2 = this.jQuery(this.searchDropdown);
+    const options = this.MapOptions(
       config,
       dataRetriever,
       dataProcessor
     );
-    const hasPlugin = typeof $jq.fn?.select2 === "function";
-    if (!hasPlugin) {
-      const err = new Error(
-        "Select2 jQuery plugin is not available on jQuery.fn. Ensure select2 is loaded in the page before initializing."
-      );
-      // Helpful breadcrumb when debugging inside portals
-      (err as any).details = {
-        jqueryPresent: !!(window as any).jQuery || !!(window as any).$,
-        select2OnFn: typeof $jq.fn?.select2,
-      };
-      throw err;
-    }
-    $element.select2(options); // Error: "Select2 is not a function"
 
-    // listeners
-    const subscribers = new Set<(v: DropdownValue | null) => void>();
-
-    const toDropdownValue = (item: s2.OptionData): DropdownValue => ({
-      Id: item.id,
-      Text: item.text,
-    });
-
-    const handle: DropdownHandle = {
-      OnChange(cb) {
-        subscribers.add(cb);
-        return () => subscribers.delete(cb);
-      },
-      GetValue() {
-        const arr: s2.OptionData[] = $element.select2("data") || [];
-        return arr.length > 0 ? toDropdownValue(arr[0]) : null;
-      },
-      GetValues() {
-        const arr: s2.OptionData[] = $element.select2("data") || [];
-        return arr.map(toDropdownValue);
-      },
-      SetValue(value) {
-        $element.val(value ? value.Id : []).trigger("change");
-      },
-      SetValues(values) {
-        $element.val(values.map((v) => v.Id)).trigger("change");
-      },
-      Destroy() {
-        $element.off(".select2adapter");
-        subscribers.clear();
-        $element.select2("destroy");
-      },
-    };
+    this.s2!.select2(options);
 
     const notify = () => {
-      subscribers.forEach((cb) => cb(handle.GetValue()));
+      this.subscribers.forEach((listener) => listener(this.GetValue()));
     };
 
     // select2 event wiring
     const onDomChange = () => notify();
-    $element.on("change.select2adapter", onDomChange);
-    $element.on("select2:select.select2adapter", onDomChange);
-    $element.on("select2:unselect.select2adapter", onDomChange);
+    this.s2!.on("change.select2adapter", onDomChange);
+    this.s2!.on("select2:select.select2adapter", onDomChange);
+    this.s2!.on("select2:unselect.select2adapter", onDomChange);
 
     notify();
-    return handle;
+    return this as any; // Returning instance; caller expects DropdownHandle shape
   }
 
-  private static MapOptions<T = any>(
+  public static toDropdownValue(item: s2.OptionData): DropdownValue {
+    return {
+      Id: item.id,
+      Text: item.text,
+    };
+  }
+
+  public OnChange(cb: (value: DropdownValue | null) => void): () => void {
+    this.subscribers.add(cb);
+    return () => this.subscribers.delete(cb);
+  }
+
+  public GetValue(): DropdownValue | null {
+    if (!this.s2) return null;
+    const arr: s2.OptionData[] = this.s2.select2("data") || [];
+    return arr.length > 0
+      ? Select2DropdownAdapter.toDropdownValue(arr[0])
+      : null;
+  }
+
+  public GetValues(): DropdownValue[] {
+    if (!this.s2) return [];
+    const arr: s2.OptionData[] = this.s2.select2("data") || [];
+    return arr.map(Select2DropdownAdapter.toDropdownValue);
+  }
+
+  public SetValue(value: DropdownValue | null): void {
+    if (!this.s2) return;
+    this.s2.val(value ? value.Id : []).trigger("change");
+  }
+
+  public SetValues(values: DropdownValue[]): void {
+    if (!this.s2) return;
+    this.s2.val(values.map((v) => v.Id)).trigger("change");
+  }
+
+  public Destroy(): void {
+    if (this.s2) {
+      this.s2.off(".select2adapter");
+      this.s2.select2("destroy");
+      // Remove created element if we own it
+      this.searchDropdown?.remove();
+    }
+    this.subscribers.clear();
+    this.s2 = null;
+    this.searchDropdown = null;
+  }
+
+  private MapOptions<T = any>(
     config: c.Config,
     dataRetriever: (searchTerm: string) => Promise<T[]>,
     dataProcessor: (data: T[]) => ic.Result
@@ -91,39 +106,41 @@ export class Select2DropdownAdapter implements DropdownAdapter {
       placeholder: config.Placeholder,
       allowClear: !!config.AllowClear,
       minimumInputLength: config.MinimumInputLength ?? undefined,
-      templateResult: Select2DropdownAdapter.OptionRenderer(
+      templateResult: this.OptionRenderer(
         config.OptionRenderer
       ),
-      templateSelection: Select2DropdownAdapter.SelectionRenderer(
+      templateSelection: this.SelectionRenderer(
         config.ResultRenderer
       ),
       ajax: {
         delay: config.Delay,
-        transport: function (
+        transport: (
           params: any,
           success: (data: any[]) => void,
           failure: (err: any) => void
-        ) {
+        ) => {
           const term = String(params?.data?.term ?? "");
-          const p = Promise.resolve().then(() => dataRetriever(term || ""));
-          p.then(success).catch(failure);
-          // Return an object compatible with jqXHR abort API
+          Promise.resolve()
+            .then(() => dataRetriever(term))
+            .then(success)
+            .catch(failure);
+          // Return an abort stub to satisfy Select2 expectations (jqXHR-like)
           return {
             abort: () => {
-              /* no-op for promise-based */
+              /* promise cannot be cancelled */
             },
           } as any;
         },
-        processResults: (_data: any[], _params: s2.QueryOptions) =>
-          Select2DropdownAdapter.ProcessedResult(dataProcessor(_data as T[])),
+        processResults: (raw: any[], _params: s2.QueryOptions) =>
+          this.ProcessedResult(dataProcessor(raw as T[])),
       },
     };
   }
 
-  private static ProcessedResult(result: ic.Result): s2.ProcessedResult {
+  private ProcessedResult(result: ic.Result): s2.ProcessedResult {
     return {
       results: result.Results.map((item) => {
-        if ("children" in item) {
+        if ("Children" in item) {
           const groupedDataItem = item as unknown as ic.GroupEntry;
           return {
             text: groupedDataItem.Text,
@@ -145,27 +162,29 @@ export class Select2DropdownAdapter implements DropdownAdapter {
           } as s2.DataFormat;
         }
       }),
-      pagination: Select2DropdownAdapter.Pagination(result.Pagination),
+      pagination: this.Pagination(result.Pagination),
     };
   }
 
-  private static Pagination(
+  private Pagination(
     pagination: { More: boolean } | undefined
   ): { more: boolean } | undefined {
     if (!pagination) return undefined;
     return { more: pagination.More };
   }
 
-// (property) Options<DataFormat | GroupedDataFormat, any>.templateSelection?:
-// ((selection: s2.DataFormat | s2.GroupedDataFormat | s2.IdTextPair | s2.LoadingData, container: JQuery) => string | JQuery) | undefined
-
-  private static SelectionRenderer(resultRenderer: c.ResultRenderer | undefined):
-    | ((selection:
+  private SelectionRenderer(
+    resultRenderer: c.ResultRenderer | undefined
+  ):
+    | ((
+        selection:
           | s2.DataFormat
           | s2.GroupedDataFormat
           | s2.IdTextPair
           | s2.LoadingData,
-        container: JQuery) => string | JQuery) | undefined {
+        container: JQuery
+      ) => string | JQuery)
+    | undefined {
     const selectionTpl: c.ResultRenderer =
       resultRenderer || ((item: any) => (item && item.text ? item.text : ""));
 
@@ -173,12 +192,16 @@ export class Select2DropdownAdapter implements DropdownAdapter {
       selection: s2.IdTextPair | s2.LoadingData | any,
       container: JQuery
     ): string | JQuery => {
+      const hostEl =
+        container && (container as any)[0]
+          ? ((container as any)[0] as HTMLElement)
+          : undefined;
       if (selection && (selection as s2.LoadingData).loading) {
         const val = selectionTpl(
           { loading: true, text: selection.text } as c.LoadingItem,
-          container[0] as HTMLElement
+          hostEl as any
         );
-        if (val instanceof HTMLElement) return jQuery(val);
+        if (val instanceof HTMLElement) return this.jQuery(val);
         return val;
       }
       const node = {
@@ -188,14 +211,14 @@ export class Select2DropdownAdapter implements DropdownAdapter {
         selected: !!selection?.selected,
         data: selection?.data ?? undefined,
       };
-      const val = selectionTpl(node, container[0] as HTMLElement); // container is undefined here
-      if (val instanceof HTMLElement) return jQuery(val);
+      const val = selectionTpl(node, hostEl as any); // guard when container is undefined
+      if (val instanceof HTMLElement) return this.jQuery(val);
       return val;
     };
     return templateSelection;
   }
 
-  private static OptionRenderer(
+  private OptionRenderer(
     optionRenderer: c.OptionRenderer | undefined
   ):
     | ((
@@ -215,7 +238,7 @@ export class Select2DropdownAdapter implements DropdownAdapter {
           loading: true,
           text: result.text,
         } as c.LoadingItem);
-        if (val instanceof HTMLElement) return jQuery(val);
+        if (val instanceof HTMLElement) return this.jQuery(val);
         return val;
       }
       // Group or option
@@ -232,7 +255,7 @@ export class Select2DropdownAdapter implements DropdownAdapter {
           })),
         };
         const val = optionTpl(group);
-        if (val instanceof HTMLElement) return jQuery(val);
+        if (val instanceof HTMLElement) return this.jQuery(val);
         return val;
       }
       // Option node
@@ -244,7 +267,7 @@ export class Select2DropdownAdapter implements DropdownAdapter {
         data: result?.data ?? undefined,
       };
       const val = optionTpl(node);
-      if (val instanceof HTMLElement) return jQuery(val);
+      if (val instanceof HTMLElement) return this.jQuery(val);
       return val;
     };
     return templateResult;

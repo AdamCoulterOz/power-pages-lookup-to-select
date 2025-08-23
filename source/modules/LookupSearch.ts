@@ -1,6 +1,6 @@
 import GroupResults from './GroupResults';
 import { Config, EntityConfig } from './Config';
-import { DropdownAdapter, DropdownHandle } from './adapters/Dropdown'
+import { DropdownAdapter } from './adapters/Dropdown'
 import { Data } from "./Data";
 import PowerPagesClient from './PowerPagesClient';
 import L2SError from './L2SError';
@@ -9,7 +9,6 @@ export default class LookupSearch {
     private readonly adapter: DropdownAdapter;
     private readonly fieldId: string;
     private readonly options: Config;
-    private handle?: DropdownHandle;
     private initialised: boolean = false;
     private entities: Map<string, EntityConfig> = new Map();
     private results: Map<string, Data> = new Map();
@@ -26,19 +25,19 @@ export default class LookupSearch {
         if (this.initialised)
             this.reset();
 
-        // try {
+        try {
             await this.setup();
-        // } catch (error) {
-        //     this.reset();
-        //     const msg = error instanceof Error ? error.message : String(error);
-        //     throw new L2SError(`Setup failed: ${msg}`, error as Error | undefined);
-        // }
+        } catch (error) {
+            this.reset();
+            const msg = error instanceof Error ? error.message : String(error);
+            throw new L2SError(`Setup failed: ${msg}`, error as Error | undefined);
+        }
         this.initialised = true;
     }
 
     private reset() {
         this.deleteHandler?.();
-        this.handle?.Destroy();
+        this.adapter.Destroy();
         this.entities.clear();
         this.results.clear();
         if (this.originalLookup)
@@ -61,18 +60,9 @@ export default class LookupSearch {
             throw new L2SError(`No entities found for field id ${this.fieldId}`);
         entities.forEach(entity => this.entities.set(entity.LogicalName, entity));
 
-        // Create new dropdown element
-        const newSearchBox: HTMLSelectElement = document.createElement('select');
-        newSearchBox.classList.add('form-select');
-        newSearchBox.id = customSelectId;
-        if (this.options.Multiple)
-            newSearchBox.multiple = true;
-
         this.originalLookup = defaultLookup.parentElement;
         if (!this.originalLookup)
             throw new Error("lookupToSelect error: Element must have a parent element");
-
-        this.originalLookup.insertAdjacentElement('afterend', newSearchBox);
 
         const fetchAndCacheResults = async (term: string): Promise<Data[]> => {
             const results = await PowerPagesClient.Search(entities)(term);
@@ -82,9 +72,9 @@ export default class LookupSearch {
             return results;
         };
 
-        this.handle = this.adapter.Enhance(newSearchBox, this.options,
-            fetchAndCacheResults, (data) => GroupResults(data, this.options.GroupByEntity));
-        this.deleteHandler = this.handle.OnChange((value) => {
+        this.adapter.Enhance(customSelectId, this.originalLookup, this.options,
+            fetchAndCacheResults, (data) => GroupResults(data, this.options.GroupByEntity), false);
+        this.deleteHandler = this.adapter.OnChange((value) => {
             if (!value)
                 return this.setDefaultLookupValues(defaultLookup, '', '');
             const entity = this.results.get(value.Id)!.LogicalName;

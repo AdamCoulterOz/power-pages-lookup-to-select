@@ -1,188 +1,60 @@
 import "reflect-metadata";
-
-// Own a single jQuery instance and expose it globally *before* loading Select2
-import $ from "jquery";
-(window as any).jQuery = $;
-(window as any).$ = $;
-
-// Patch $.fn.select2 on that same jQuery
-
-// (Do not import Select2 JS here, as we may need to patch around AMD/RequireJS on runtime.)
-
 import { LookupSearch, Config, Select2DropdownAdapter } from "./index";
+import {
+  PowerPagesShell,
+  ValidateLoginSession,
+} from "./modules/PowerPagesClient";
+
+type L2SApi = {
+  LookupSearch: typeof LookupSearch;
+  Config: typeof Config;
+  Select2DropdownAdapter: typeof Select2DropdownAdapter;
+};
 
 declare global {
   interface Window {
-    L2S?: any;
-    __L2S_BUNDLE_LOADED__?: boolean;
+    L2S?: L2SApi;
+    L2S_Loaded?: boolean;
+    jQuery?: typeof import("jquery");
+    $?: typeof import("jquery");
+    shell?: PowerPagesShell;
+    validateLoginSession?: ValidateLoginSession;
   }
 }
 
-/** Expose API for debugging in DevTools */
-(window as any).L2S = { LookupSearch, Config, Select2DropdownAdapter };
-
-/** Small helper used by bootstrap */
-async function waitFor(
-  cond: () => boolean,
-  timeoutMs = 15000,
-  intervalMs = 250
-) {
-  const start = Date.now();
-  return new Promise<void>((resolve, reject) => {
-    const tick = () => {
-      try {
-        if (cond()) return resolve();
-      } catch {}
-      if (Date.now() - start >= timeoutMs) return reject(new Error("timeout"));
-      setTimeout(tick, intervalMs);
-    };
-    tick();
-  });
-}
-
-function ensureSelect2Css() {
-  const href =
-    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css";
-  if (!document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = href;
-    document.head.appendChild(link);
-  }
-}
-
-// Ensures Select2 is loaded and registered on the current jQuery, even with AMD/RequireJS present
-async function ensureSelect2Plugin() {
-  const g: any = window as any;
-  const $jq = g.jQuery || g.$;
-  if ($jq?.fn?.select2) return; // already patched
-
-  // Temporarily disable AMD so Select2's UMD executes immediately
-  const hadDefine = typeof g.define === "function";
-  const savedDefine = g.define;
-  const hadAMD = hadDefine && !!g.define.amd;
-  if (hadAMD) {
-    try { g.define.amd = undefined; } catch {}
-  }
-
-  await new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js";
-    script.onload = () => {
-      // Restore AMD if we changed it
-      if (hadAMD) g.define = savedDefine;
-      resolve();
-    };
-    script.onerror = (e) => {
-      if (hadAMD) g.define = savedDefine;
-      reject(new Error("Failed to load Select2 plugin script"));
-    };
-    document.head.appendChild(script);
-  });
-}
-
-/** The debuggable bootstrap (compiled with sourcemaps) */
-export async function bootstrap(fieldId: string = "sch_location") {
-  const g = window as any;
-  ensureSelect2Css();
-
-  // Ensure the library is present and not already applied
-  if (
-    !(
-      g.L2S &&
-      g.L2S.LookupSearch &&
-      g.L2S.Select2DropdownAdapter &&
-      g.L2S.Config
-    )
-  )
-    return;
-  if (document.getElementById(fieldId + "_L2S")) return;
-
-  await waitFor(() => !!document.getElementById(fieldId));
-  // Soft-wait for shell auth helpers; some pages may differ
-  try {
-    await waitFor(() => {
-      const s = g.shell;
-      return !!(
-        s &&
-        typeof s.getTokenDeferred === "function" &&
-        typeof g.validateLoginSession === "function"
-      );
-    }, 8000);
-    console.info("[L2S] Shell helpers detected");
-  } catch {
-    // eslint-disable-next-line no-console
-    console.warn("[L2S] Shell helpers not detected; continuing without them");
-  }
-
-  // Soft-wait for entity name element; some forms don’t have this ID
-  try {
-    await waitFor(
-      () => !!document.getElementById("EntityFormView_EntityName"),
-      4000
-    );
-    console.info("[L2S] EntityFormView_EntityName detected");
-  } catch {
-    // eslint-disable-next-line no-console
-    console.warn("[L2S] EntityFormView_EntityName not found; continuing");
-  }
-  // Soft-wait: the lookup modal grid may not exist until opened; don't block init on it
-  try {
-    await waitFor(() => {
-      const modal = document.getElementById(fieldId + "_lookupmodal");
-      const grid = modal ? modal.querySelector(".entity-grid") : null;
-      return !!grid;
-    }, 5000);
-    console.info("[L2S] Modal grid detected");
-  } catch {
-    // eslint-disable-next-line no-console
-    console.warn(
-      "[L2S] Proceeding without waiting for modal grid (not present yet)"
-    );
-  }
-
-  try {
-    // Ensure jQuery is ready (Power Pages may lazy-load it)
-    await waitFor(() => !!((window as any).jQuery || (window as any).$), 5000);
-    console.info("[L2S] jQuery detected");
-  } catch {
-    // eslint-disable-next-line no-console
-    console.warn("[L2S] jQuery not detected; continuing without it");
-  }
-
-  // Ensure Select2 plugin is actually registered even on RequireJS pages
-  await ensureSelect2Plugin();
-
-  const $jq = (window as any).jQuery || (window as any).$;
-  if (typeof $jq?.fn?.select2 !== "function") {
-    throw new Error("[L2S] Select2 not registered on this jQuery instance"); // THROWS HERE
-  }
-
-  // Final ensure
-  // if (typeof (window as any).jQuery?.fn?.select2 !== "function") {
-  //   throw new Error(
-  //     "Select2 plugin not available on jQuery.fn after load. Ensure 'select2' is required/loaded before bootstrap."
-  //   );
-  // }
-
-  const adapter = new Select2DropdownAdapter();
-  const ls = new LookupSearch(adapter, fieldId, new Config());
-  await ls.Apply();
-}
-
-/** Also expose bootstrap on window for manual triggering */
-(window as any).L2S.bootstrap = bootstrap;
+window.L2S = {
+  LookupSearch,
+  Config,
+  Select2DropdownAdapter,
+} satisfies L2SApi;
 
 (() => {
-  if ((window as any).__L2S_BUNDLE_LOADED__) {
-    // eslint-disable-next-line no-console
+  if (window.L2S_Loaded) {
     console.warn("[L2S] bundle already loaded — skipping re-init");
     return;
   }
-  (window as any).__L2S_BUNDLE_LOADED__ = true;
+  window.L2S_Loaded = true;
 
-  const start = () => {
-    void bootstrap();
+  const start = async () => {
+    const $jq = window.jQuery ?? window.$;
+    if (!$jq) throw new Error("[L2S] jQuery is not available on window...");
+    window.jQuery = $jq;
+    window.$ = $jq;
+
+    await waitForShellHelpers();
+    await ensureSelect2();
+
+    const lookupFields = ["sch_location", "sch_personinvolved"];
+    const lookupTasks = lookupFields.map((field) => initializeLookup(field));
+    await waitFor("Lookup fields", async () => {
+      try {
+        await Promise.all(lookupTasks);
+      } catch (error) {
+        console.error("[L2S] Error initializing lookup fields:", error);
+        return false;
+      }
+      return true;
+    });
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start, { once: true });
@@ -190,3 +62,119 @@ export async function bootstrap(fieldId: string = "sch_location") {
     start();
   }
 })();
+
+async function waitForShellHelpers() {
+  await waitFor(
+    "Shell helpers",
+    () => {
+      const s = window.shell;
+      return !!(
+        s &&
+        typeof s.getTokenDeferred === "function" &&
+        typeof window.validateLoginSession === "function"
+      );
+    },
+    8000
+  );
+
+  await waitFor(
+    "EntityFormView_EntityName",
+    () => !!document.getElementById("EntityFormView_EntityName"),
+    4000
+  );
+}
+
+async function ensureSelect2() {
+  if (window.$ && typeof window.$.fn?.select2 === "function") return;
+
+  await loadStylesheet(
+    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+  );
+  await loadScript(
+    "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js"
+  );
+
+  if (!(window.$ && typeof window.$.fn?.select2 === "function")) {
+    throw new Error("Select2 failed to load or plugin not registered on $.fn");
+  }
+}
+
+function loadStylesheet(href: string): Promise<void> {
+  if (Array.from(document.styleSheets).some(s => (s as CSSStyleSheet).href === href))
+    return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.onload = () => resolve();
+    link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`));
+    document.head.appendChild(link);
+  });
+}
+
+function loadScript(src: string): Promise<void> {
+  if (document.querySelector(`script[src="${src}"]`)) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load JS: ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+export async function initializeLookup(fieldId: string) {
+  if (document.getElementById(`${fieldId}_L2S`)) return;
+
+  await Promise.all([
+    waitFor(`GetField ${fieldId}`, () => !!document.getElementById(fieldId)),
+    waitFor(
+      `GetModalGrid ${fieldId}`,
+      () => {
+        const modal = document.getElementById(`${fieldId}_lookupmodal`);
+        return !!modal?.querySelector(".entity-grid");
+      },
+      5000
+    ),
+  ]);
+
+  const adapter = new Select2DropdownAdapter();
+  const ls = new LookupSearch(adapter, fieldId, new Config());
+  await ls.Apply();
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+type MaybePromise<T> = T | Promise<T>;
+
+async function waitFor(
+  name: string,
+  cond: () => MaybePromise<boolean>,
+  timeoutMs = 15_000,
+  intervalMs = 250
+): Promise<boolean> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      if (await cond()) {
+        console.info(
+          `[L2S] waitFor ${name} resolved after ${Date.now() - start}ms`
+        );
+        return true;
+      }
+    } catch (error) {
+      console.debug(
+        `[L2S] waitFor ${name} failed in wait cycle, will retry if not timed out:`,
+        error
+      );
+    }
+    await sleep(intervalMs);
+  }
+  console.error(
+    `[L2S] waitFor ${name} timed out after ${Date.now() - start}ms`
+  );
+  return false;
+}
