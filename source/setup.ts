@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { LookupSearch, Config, Select2DropdownAdapter } from "./index";
+import { LookupSearch, Config, Select2DropdownAdapter } from "./index"
 import {
   PowerPagesShell,
   ValidateLoginSession,
@@ -19,6 +19,7 @@ declare global {
     $?: typeof import("jquery");
     shell?: PowerPagesShell;
     validateLoginSession?: ValidateLoginSession;
+    L2S_LOOKUP_FIELDS?: string[]; // override default field ids
   }
 }
 
@@ -35,33 +36,45 @@ window.L2S = {
   }
   window.L2S_Loaded = true;
 
+  const lookupFields = window.L2S_LOOKUP_FIELDS ?? [];
+
   const start = async () => {
     const $jq = window.jQuery ?? window.$;
     if (!$jq) throw new Error("[L2S] jQuery is not available on window...");
-    window.jQuery = $jq;
-    window.$ = $jq;
+    if (!window.jQuery) window.jQuery = $jq;
+    if (!window.$) window.$ = $jq;
 
     await waitForShellHelpers();
     await ensureSelect2();
-
-    const lookupFields = ["sch_location", "sch_personinvolved"];
-    const lookupTasks = lookupFields.map((field) => initializeLookup(field));
-    await waitFor("Lookup fields", async () => {
-      try {
-        await Promise.all(lookupTasks);
-      } catch (error) {
-        console.error("[L2S] Error initializing lookup fields:", error);
-        return false;
-      }
-      return true;
-    });
+    initAll(lookupFields);
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
     start();
   }
+
+  // MutationObserver to re-init on DOM changes
+  const mo = new MutationObserver((muts) => {
+    if (muts.some(m => m.addedNodes && m.addedNodes.length)) {
+      initAll(lookupFields);
+    }
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
 })();
+
+function initAll(fields: string[]) {
+  fields.forEach((field) => {
+    try {
+      const el = document.getElementById(field);
+      if (el && !document.getElementById(`${field}_L2S`)) {
+        void initializeLookup(field);
+      }
+    } catch (err) {
+      console.error(`[L2S] initAll failed for ${field}:`, err);
+    }
+  });
+}
 
 async function waitForShellHelpers() {
   await waitFor(
@@ -173,7 +186,7 @@ async function waitFor(
     }
     await sleep(intervalMs);
   }
-  console.error(
+  console.warn(
     `[L2S] waitFor ${name} timed out after ${Date.now() - start}ms`
   );
   return false;

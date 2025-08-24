@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
   "build": "tsc",
-  "build:bundle": "node ./scripts/build-dev-bundle.cjs",
+  "build:bundle": "node ./scripts/build-bundle.cjs",
   "build:all": "npm run build && npm run build:bundle",
     "build:watch": "tsc --watch",
     "dev": "tsc --watch",
