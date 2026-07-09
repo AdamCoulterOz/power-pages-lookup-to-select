@@ -3,68 +3,6 @@ import { AttributeMeta } from "./meta/Attribute";
 import { AttributeMetaDiscriminator, flattenMetaDiscriminator } from "./Attribute";
 import { transformUsingDiscriminator } from "./transformers";
 
-export class ViewLayout {
-  @Type(() => Configuration)
-  Configuration: Configuration;
-  Base64SecureConfiguration: string; // Dont try to parse this, it's encrypted, but we need it to call the API to get the full configuration for a target view
-  ViewName: string;
-  ColumnsTotalWidth: number;
-  Id: string;
-}
-
-export class CompleteViewLayout extends ViewLayout {
-  @Type(() => Column)
-  Columns: Column[];
-  SortExpression: string;
-}
-
-export class Column {
-  WidthAsPercent: number;
-  Type: number;
-  LogicalName: string;
-  Name: string;
-  Width: number;
-  SortDisabled: boolean;
-  @Transform(
-    transformUsingDiscriminator(
-      AttributeMeta as any,
-      (AttributeMetaDiscriminator as any).discriminator,
-      flattenMetaDiscriminator
-    ),
-    { toClassOnly: true }
-  )
-  Metadata?: AttributeMeta;
-}
-
-export class Configuration {
-  PartialViewConfig: boolean;
-  EntityName: string;
-  PrimaryKeyName?: string;
-  ViewId: string;
-  Id: string;
-  PageSize: number;
-
-  @Type(() => ViewColumn)
-  ColumnOverrides: ViewColumn[];
-  EnableEntityPermissions: boolean;
-
-  @Type(() => Search)
-  Search: Search;
-  FilterQueryStringParameterName: string;
-  SortQueryStringParameterName: string;
-  PageQueryStringParameterName: string;
-  FilterByUserOptionLabel: string;
-  ActionLinksColumnWidth: number;
-  LanguageCode: number;
-  @Type(() => FilterSettings)
-  FilterSettings: FilterSettings;
-  ModalLookupAttributeLogicalName: string;
-  ModalLookupEntityLogicalName: string;
-  ModalLookupGridPageSize: number;
-  SubgridFormEntityId: string;
-  ViewName?: string;
-}
-
 export class ViewColumn {
   AttributeLogicalName: string;
   DisplayName: string;
@@ -107,4 +45,66 @@ export class Search {
   NlplaceholderText: string;
   TooltipText: string;
   ButtonLabel: string;
+}
+
+export class Configuration {
+  PartialViewConfig: boolean;
+  EntityName: string;
+  PrimaryKeyName?: string;
+  ViewId: string;
+  Id: string;
+  PageSize: number;
+
+  @Type(() => ViewColumn)
+  ColumnOverrides: ViewColumn[];
+  EnableEntityPermissions: boolean;
+
+  @Type(() => Search)
+  Search: Search;
+  FilterQueryStringParameterName: string;
+  SortQueryStringParameterName: string;
+  PageQueryStringParameterName: string;
+  FilterByUserOptionLabel: string;
+  ActionLinksColumnWidth: number;
+  LanguageCode: number;
+  @Type(() => FilterSettings)
+  FilterSettings: FilterSettings;
+  ModalLookupAttributeLogicalName: string;
+  ModalLookupEntityLogicalName: string;
+  ModalLookupGridPageSize: number;
+  SubgridFormEntityId: string;
+  ViewName?: string;
+}
+
+export class ViewLayout {
+  @Type(() => Configuration)
+  Configuration: Configuration;
+  Base64SecureConfiguration: string; // Dont try to parse this, it's encrypted, but we need it to call the API to get the full configuration for a target view
+  ViewName: string;
+  ColumnsTotalWidth: number;
+  Id: string;
+}
+
+export class CompleteViewLayout extends ViewLayout {
+  @Type(() => Column)
+  Columns: Column[];
+  SortExpression: string;
+}
+
+export class Column {
+  WidthAsPercent: number;
+  Type: number;
+  LogicalName: string;
+  Name: string;
+  Width: number;
+  SortDisabled: boolean;
+  @Transform(
+    transformUsingDiscriminator(
+      AttributeMeta as any,
+      (AttributeMetaDiscriminator as any).discriminator,
+      flattenMetaDiscriminator
+    ),
+    { toClassOnly: true }
+  )
+  Metadata?: AttributeMeta;
 }
